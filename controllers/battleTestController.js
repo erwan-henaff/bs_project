@@ -8,13 +8,16 @@ let key = require('../env/key');
 let appkeyDCI = key.appkeyDCI;
 let appkeyHome = key.appkeyHome;
 
+let counter = 0;
+let arrPlayer = ["2CRY9P8YJ", "8JGVYR8YC", "PC92QYGV8"]
 
 
 exports.addBattleTest = async (req,res,next) => {
 
     try {
 
-        let playerTag = req.body.playerTag;
+        // let playerTag = req.body.playerTag;
+
         let whichKey = req.body.whichKey;
 
         let Bearer = "";
@@ -24,12 +27,21 @@ exports.addBattleTest = async (req,res,next) => {
 
 
 
-        let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
+        // let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //////////// get the battlelog from API, it's an object with "items" key being an array
 
-         
+        setInterval(async ()=> {
+
+        counter++;
+        let playerTag = arrPlayer[counter%3];
+        let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
+
+        console.log("***************************************************************");
+        console.log("***************************************************************");
+        console.log(counter);
+        console.log(playerTag);
 
         const getBattleLog = await axios({
             method: 'GET',  
@@ -70,6 +82,9 @@ exports.addBattleTest = async (req,res,next) => {
                     .send({message: "battles are already in it"})
             }
         });
+
+
+        }, 30000, counter)
 
     } catch (e) {
         next(e);

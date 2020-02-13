@@ -36,39 +36,50 @@ exports.addBattles = async (req,res,next) => {
             }
         });
 
-        
 
         getBattleLog.data.items.forEach( async (element, index) => {
-            const battle = new Battle (element);
 
-            //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
-            //// return null is none, one object if exist, or error if error
+            try {
+                const battle = new Battle (element);
 
-            const checkBattleExist = await Battle.findOne({battleTime: battle.battleTime}, (err, result)=> {
-                if (err) {
-                    console.log("I'm in checkBattleExist error")
-                    return err
+                //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
+                //// return null is none, one object if exist, or error if error
+
+                const checkBattleExist = await Battle.findOne({battleTime: battle.battleTime}, (err, result)=> {
+                    if (err) {
+                        return err
+                    }
+                    else {
+                        return result
+                    }
+                });
+                
+                if (checkBattleExist === null) {
+                    await battle.save();
+                    console.log(`${index} battle among 25 from #9RGYGP20P  battle_log have been added`);
+                    // res
+                    //     .status(200)
+                    //     .send(battle);
                 }
                 else {
-                    console.log("I'm in checkBattleExist");
-                    return result
+                    console.log(`${index} battle is already in it`);
                 }
-            });
+                         
+            } catch (e) {
+                next(e);
+            }
             
-            if (checkBattleExist === null) {
-                await battle.save();
-                console.log(`${index} battle among 25 from #9RGYGP20P  battle_log have been added`);
-                res
-                    .status(200)
-                    .send(battle);
-            }
-            else {
-                res.
-                    status(200)
-                    .send({message: "battles are already in it"})
-            }
         });
 
+        res
+                    .status(200)
+                    .send(getBattleLog.data.items);   
+
+
+/////////////////////////////////////////////////////////
+        // res.end();
+///////////////////////////////////////////////////////
+    
     } catch (e) {
         next(e);
     } 
