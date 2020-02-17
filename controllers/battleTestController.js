@@ -34,39 +34,39 @@ exports.addBattleTest = async (req,res,next) => {
 
         setInterval(async ()=> {
 
-        counter++;
-        let playerTag = arrPlayer[counter%3];
-        let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
+            counter++;
+            let playerTag = arrPlayer[counter%3];
+            let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
 
-        console.log("***************************************************************");
-        console.log("***************************************************************");
-        console.log(counter);
-        console.log(playerTag);
+            console.log("***************************************************************");
+            console.log("***************************************************************");
+            console.log(counter);
+            console.log(playerTag);
 
-        const getBattleLog = await axios({
-            method: 'GET',  
-            url: url,
-            headers: {
-                "Accept": "application/json",
-                'authorization': Bearer
-            }
-        });
-
-        getBattleLog.data.items.forEach( async (element, index) => {
-            const battle = new BattleTest (element);
-
-            //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
-            //// return null is none, one object if exist, or error if error
-
-            const checkBattleExist = await BattleTest.findOne({battleTime: battle.battleTime}, (err, result)=> {
-                if (err) {
-                    console.log("I'm in checkBattleExist error")
-                    return err
+            const getBattleLog = await axios({
+                method: 'GET',  
+                url: url,
+                headers: {
+                    "Accept": "application/json",
+                    'authorization': Bearer
                 }
-                else {
-                    console.log("I'm in checkBattleExist");
-                    return result
-                }
+            });
+
+            getBattleLog.data.items.forEach( async (element, index) => {
+                const battle = new BattleTest (element);
+
+                //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
+                //// return null is none, one object if exist, or error if error
+
+                const checkBattleExist = await BattleTest.findOne({battleTime: battle.battleTime}, (err, result)=> {
+                    if (err) {
+                        console.log("I'm in checkBattleExist error")
+                        return err
+                    }
+                    else {
+                        console.log("I'm in checkBattleExist");
+                        return result
+                    }
             });
             
             if (checkBattleExist === null) {

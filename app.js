@@ -9,8 +9,10 @@ const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const battlesRouter = require('./routes/battles');
-const battleTestRouter = require('./routes/battletest');
+const battlesHighRankRouter = require('./routes/battlesHighRank');
+const userNoLoginRouter = require('./routes/usernologin')
 
+const battleTestRouter = require('./routes/battletest');
 
 const cleanDataRouter = require('./routes/cleanData');
 
@@ -47,10 +49,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/battles', battlesRouter);
 app.use('/battletest', battleTestRouter);
+app.use('/usernologin', userNoLoginRouter);
+
+app.use('/battlesHighRank', battlesHighRankRouter);
 
 
 app.use('/cleandata', cleanDataRouter);
-
 
 
 // catch 404 and forward to error handler
