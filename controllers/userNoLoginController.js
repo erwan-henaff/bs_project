@@ -13,6 +13,12 @@ let appkeyHome = key.appkeyHome;
 
 exports.addUserNoLogin = async (req,res,next) => {
 
+console.log("***************************");
+console.log("**********************************************************");
+console.log("***************************");
+console.log("***************************");
+
+
     try {
 
         let playerTag = req.body.playerTag;
@@ -138,7 +144,7 @@ exports.addUserNoLogin = async (req,res,next) => {
             user.soloVictories.push(soloVictoriesNow);
             user.duoVictories.push(duoVictoriesNow);
 
-            user.brawlers.forEach((el,index) => push(el.push(brawlersTrophiesNow[index])));
+            user.brawlers.forEach((el,index) => el.trophies.push(brawlersTrophiesNow[index]));
             
             await user.save();
             console.log(`${infoUser.name} with tag ${infoUser.tag} has been saved`);

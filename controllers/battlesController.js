@@ -76,9 +76,6 @@ exports.addBattles = async (req,res,next) => {
                     .send(getBattleLog.data.items);   
 
 
-/////////////////////////////////////////////////////////
-        // res.end();
-///////////////////////////////////////////////////////
     
     } catch (e) {
         next(e);
