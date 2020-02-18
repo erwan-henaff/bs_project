@@ -17,15 +17,47 @@ const UserSchema = new Schema ({
             }
         }
     ],
-    highestTrophies: Number,
+    highestTrophies: [
+        {
+            highestTrophies: Number,
+            date : {
+                $type: Date,
+                default: Date.now
+            }
+        }
+    ],
     powerPlayPoints: Number,
     highestPowerPlayPoints: Number,
     expLevel: Number,
     expPoints: Number,
     isQualifiedFromChampionshipChallenge: Boolean,
-    '3vs3Victories': Number,
-    soloVictories: Number,
-    duoVictories: Number,
+    '3vs3Victories': [
+        {
+            '3vs3Victories': Number,
+            date : {
+                $type: Date,
+                default: Date.now
+            }
+        }
+    ],
+    soloVictories: [
+        {
+            soloVictories: Number,
+            date : {
+                $type: Date,
+                default: Date.now
+            }
+        }
+    ],
+    duoVictories: [
+        {
+            duoVictories: Number,
+            date : {
+                $type: Date,
+                default: Date.now
+            }
+        }
+    ],
     bestRoboRumbleTime: Number,
     bestTimeAsBigBrawler: Number,
     club : {
@@ -38,7 +70,16 @@ const UserSchema = new Schema ({
             name: String,
             power: Number,
             rank: Number,
-            trophies: Number,
+            // trophies: Number,
+            trophies: [
+                {
+                    trophies: Number,
+                    date : {
+                        $type: Date,
+                        default: Date.now
+                    }
+                }
+            ],
             highestTrophies: Number,
             starPowers: [
                 {
