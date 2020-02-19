@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/style.css">
     <title>Brawlnumbers</title>
 </head>
 <body>
@@ -12,11 +13,16 @@
         <h2>Get the stats of a player</h2>
         <input type="text" id="tag_input">
         <input type="button" value="submit the player's tag" id="submit_button">
-        <div id="resultcontainer"></div>
+        <div id="playerInfoCont"></div>
+        <div id="battlelogCont"></div>
+
     </div>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <script src="javascripts/indexFrontEnd.js"></script>
+    <script src="javascripts/helpers.js"></script>
+
 
 </body>
 </html>

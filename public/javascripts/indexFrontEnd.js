@@ -1,3 +1,7 @@
+// import { makePlayerContainer }  from './helpers'
+
+
+
 let result_container = document.getElementById("resultcontainer")
 let tag_input = document.getElementById("tag_input");
 
@@ -17,12 +21,12 @@ let requestData = async (playerTag) => {
                 whichKey: "appkeyDCI"
             } 
         })  
-        console.log("***************-------------------*****************")
-        console.log(playerInfo.data[0]);
-        console.log(playerInfo.data[1]);
+        // console.log("***************-------------------*****************")
+        makePlayerContainer(playerInfo.data[0]);
+        // return playerInfo.data
 
     } catch (error) {
-        next(error)
+        console.log(error);
     }   
 };
 
