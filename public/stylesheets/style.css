@@ -1,8 +1,70 @@
 body {
-  padding: 50px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: rgb(33, 41, 116);
+  color: white;
 }
 
-a {
-  color: #00B7FF;
+header {
+  text-align: center;
+}
+header div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+}
+#tag_input {
+  display: block;
+  height: 40px;
+  box-sizing: border-box;
+  font-weight: bolder;
+  color: cornflowerblue;
+}
+#submit_button {
+  display: none;
+}
+#submit_button_label {
+  box-sizing: border-box;
+  padding: 10px;
+  display: block;
+  height: 40px;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+#mainCont {
+  width: 100%;
+}
+#playerInfoCont {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#playerInfoCont > div {
+  display: block;
+  text-align: center;
+  width: 50%;
+}
+#playerInfoCont .brawlersDiv {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+}
+.brawlersDiv h3 {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.brawlersDiv .brawlerDiv {
+  width: 46%;
+  margin:2%;
+  height: 300 px;
+  box-sizing: border-box;
+  padding: 15px;
+  text-align: center;
+  background-color: rgb(7, 38, 104);
 }

@@ -2,7 +2,6 @@
 
 
 
-let result_container = document.getElementById("resultcontainer")
 let tag_input = document.getElementById("tag_input");
 
 let submit_button = document.getElementById("submit_button")

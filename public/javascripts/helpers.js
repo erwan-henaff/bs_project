@@ -13,6 +13,11 @@ const makePlayerContainer = (data) => {
     nameDiv.classList.add("nameDiv");
     nameDiv.innerText = `Name : ${data.name}`;
 
+    let tagDiv = document.createElement("div");
+    tagDiv.classList.add("tagDiv");
+    tagDiv.innerText = `Tag : ${data.tag}`;
+
+
     let trophiesDiv = document.createElement("div");
     trophiesDiv.classList.add("trophiesDiv");
     trophiesDiv.innerText = `Trophies : ${data.trophies[data.trophies.length -1].trophies}`;
@@ -64,13 +69,14 @@ const makePlayerContainer = (data) => {
 
 
     playerInfoCont.appendChild(nameDiv);
+    playerInfoCont.appendChild(tagDiv);
     playerInfoCont.appendChild(trophiesDiv);
     playerInfoCont.appendChild(highestTrophiesDiv);
-    playerInfoCont.appendChild(expLevelDiv);
     playerInfoCont.appendChild(_3vs3Div);
+    playerInfoCont.appendChild(expLevelDiv);
     playerInfoCont.appendChild(soloDiv);
-    playerInfoCont.appendChild(duoDiv);
     playerInfoCont.appendChild(powerPlayDiv);
+    playerInfoCont.appendChild(duoDiv);
     playerInfoCont.appendChild(powerPlayHighDiv);
     playerInfoCont.appendChild(bestRoboRumbleTimeDiv);
     playerInfoCont.appendChild(bestTimeAsBigBrawlerDiv);
@@ -82,7 +88,7 @@ const makeBrawlerCont = (data) => {
 
     let brawlerDiv = document.createElement("div");
     brawlerDiv.classList.add(`brawlerDiv`, `brawlerDiv${data.id}`);
-    brawlerDiv.innerHTML = `${data.name} / power : ${data.power} / rank : ${data.rank} / `;
+    brawlerDiv.innerHTML = `${data.name}<br>Power : ${data.power}<br>Rank : ${data.rank}<br>Trophies : ${data.trophies[data.trophies.length -1].trophies} <br>Highest Trophies : ${data.highestTrophies}`;
 
     return brawlerDiv;
 }
