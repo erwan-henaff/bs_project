@@ -70,7 +70,6 @@ const UserSchema = new Schema ({
             name: String,
             power: Number,
             rank: Number,
-            // trophies: Number,
             trophies: [
                 {
                     trophies: Number,
