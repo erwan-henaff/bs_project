@@ -88,7 +88,9 @@ const makeBrawlerCont = (data) => {
 
     let brawlerDiv = document.createElement("div");
     brawlerDiv.classList.add(`brawlerDiv`, `brawlerDiv${data.id}`);
-    brawlerDiv.innerHTML = `${data.name}<br>Power : ${data.power}<br>Rank : ${data.rank}<br>Trophies : ${data.trophies[data.trophies.length -1].trophies} <br>Highest Trophies : ${data.highestTrophies}`;
+    let urlPicture = `../assets/brawler-models/${data.id}.png`;
+    console.log(urlPicture);
+    brawlerDiv.innerHTML = `${data.name}<br>Power : ${data.power}<br>Rank : ${data.rank}<br>Trophies : ${data.trophies[data.trophies.length -1].trophies} <br>Highest Trophies : ${data.highestTrophies}<img src ="${urlPicture}" alt="picture" width="100%">`;
 
     return brawlerDiv;
 }
