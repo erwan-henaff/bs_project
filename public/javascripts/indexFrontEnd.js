@@ -53,14 +53,22 @@ var sampleClosedSpline = new THREE.CatmullRomCurve3( [
 sampleClosedSpline.curveType = "catmullrom";
 sampleClosedSpline.tension = 0.6;
 
+
+
 var camPosIndex = 0;
 
+
+
+/////// scroll event to go along the z-index 
+
 function updateCamera(ev) {
-    // ev.preventDefault();
-    camera.position.z = 60 - window.scrollY / 5;
+    ev.preventDefault();
+    camera.position.z = 60 - window.scrollY / 2;
     console.log("scrollin ...")
 }
-renderer.domElement.addEventListener("scroll", updateCamera);
+window.addEventListener("scroll", updateCamera);
+
+
 
 
 function animate() {
