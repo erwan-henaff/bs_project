@@ -39,34 +39,64 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
     let material = new THREE.MeshNormalMaterial();
         
     let mesh2 = new THREE.Mesh(geometry, material);
-    mesh2.position.x = -30;
+    // geometry.computeBoundingBox()
+    geometry.center();
     mesh2.position.y = -60;
     mesh2.position.z = -100;
     scene.add(mesh2);
 } );
 
-var sampleClosedSpline = new THREE.CatmullRomCurve3( [
+let catMullArray = [
     new THREE.Vector3( 0, 0, 60 ),
-    new THREE.Vector3( 0, 0, -900)
-], true );
+    new THREE.Vector3( 0, 0, 20 )
+]
+
+for (let i = 0; i < 33; i++) {
+    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - i*30 ))
+}
+for (let i = 0; i < 33; i++) {
+    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + i*30 ))
+}
+
+// catMullArray.push(new THREE.Vector3( 0, 0, -1000 ));
+
+console.log(catMullArray);
+
+let sampleClosedSpline = new THREE.CatmullRomCurve3( catMullArray, true );
+
+// var sampleClosedSpline = new THREE.CatmullRomCurve3( [
+//     new THREE.Vector3( 0, 0, 60 ),
+//     new THREE.Vector3( 0, 0, -900)
+// ], true );
 
 sampleClosedSpline.curveType = "catmullrom";
-sampleClosedSpline.tension = 0.6;
+sampleClosedSpline.tension = 0.2;
+
+let camPosIndex = 0;
 
 
 
-var camPosIndex = 0;
+function updateCamera(ev) {
+    ev.preventDefault();
+    camPosIndex = window.scrollY / 2;
+    let camPos = sampleClosedSpline.getPoint(camPosIndex / 2000);
+    camera.position.x = camPos.x;
+    camera.position.y = camPos.y;
+    camera.position.z = camPos.z;
+    console.log(camPos.z, camPos.y);
 
+}
+window.addEventListener("scroll", updateCamera);
 
 
 /////// scroll event to go along the z-index 
 
-function updateCamera(ev) {
-    ev.preventDefault();
-    camera.position.z = 60 - window.scrollY / 2;
-    console.log("scrollin ...")
-}
-window.addEventListener("scroll", updateCamera);
+// function updateCamera(ev) {
+//     ev.preventDefault();
+//     camera.position.z = 60 - window.scrollY / 2;
+//     console.log("scrollin ...")
+// }
+// window.addEventListener("scroll", updateCamera);
 
 
 
