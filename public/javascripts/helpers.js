@@ -105,14 +105,21 @@ Highest Trophies : ${data.highestTrophies}
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
 
-        let texture = new THREE.TextureLoader().load( `../assets/brawler-models/${data.id}.png` );
-        let materialProj = new THREE.MeshBasicMaterial( { map: texture } );
 
-        let cube = new THREE.Mesh(geometryCube, materialProj);
+        let texture = new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)
+        // let materialProj = new THREE.MeshBasicMaterial( {map : texture})
+        var materialProj2 = 
+        [
+            null, 
+            null, 
+            null,
+            null, 
+            new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)}), // FRONT SIDE
+            null 
+        ];
 
+        let cube = new THREE.Mesh(geometryCube, materialProj2);
 
-        // let materialCube = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        // var cube = new THREE.Mesh( geometryCube, materialCube );
 
         lineCube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
         lineCube.position.z = -40 - distance * 30;
