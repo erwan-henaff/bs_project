@@ -85,7 +85,7 @@ Trophies : ${data.trophies[data.trophies.length -1].trophies}
 Highest Trophies : ${data.highestTrophies}
 `           , {
             font: font,
-            size: 1,
+            size: 0.5,
             height: 0.2,
             curveSegments: 2,
             bevelEnabled: false,
@@ -94,15 +94,35 @@ Highest Trophies : ${data.highestTrophies}
             bevelOffset: 0,
             bevelSegments: 5
         } );
-        let material = new THREE.MeshNormalMaterial();
-            
+        let material = new THREE.MeshNormalMaterial();    
         let mesh2 = new THREE.Mesh(geometry, material);
-        // mesh2.position.x = -10;
         geometry.center();
-
-        mesh2.position.y = 10 - 20 * (distance%2);
+        mesh2.position.y = -4 + 10 - 20 * (distance%2);
         mesh2.position.z = -40 - distance * 30;
         scene.add(mesh2);
+
+        let geometryCube = new THREE.BoxGeometry( 5, 7, 1 );
+        let edges = new THREE.EdgesGeometry( geometryCube );
+        let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
+
+        let texture = new THREE.TextureLoader().load( `../assets/brawler-models/${data.id}.png` );
+        let materialProj = new THREE.MeshBasicMaterial( { map: texture } );
+
+        let cube = new THREE.Mesh(geometryCube, materialProj);
+
+
+        // let materialCube = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        // var cube = new THREE.Mesh( geometryCube, materialCube );
+
+        lineCube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
+        lineCube.position.z = -40 - distance * 30;
+
+        cube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
+        cube.position.z = -40 - distance * 30;
+
+        scene.add( lineCube );
+        scene.add( cube );
+
     } );
 
 }

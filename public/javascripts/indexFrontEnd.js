@@ -13,10 +13,12 @@ let cont = document.getElementById('mainCont');
 cont.appendChild( renderer.domElement );
 
 
-var geometry = new THREE.IcosahedronGeometry(6, 2);
+var geometry = new THREE.IcosahedronGeometry(7, 2);
 // var material = new THREE.MeshLambertMaterial( { color: 0x5029ff } );
 var edges = new THREE.EdgesGeometry( geometry );
-var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
+line.position.y = -40;
+line.position.z = -30;
 scene.add( line );
 
 
@@ -27,8 +29,8 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
 
 	let geometry = new THREE.TextGeometry( 'BRAWL DATA', {
 		font: font,
-		size: 6,
-		height: 3,
+		size: 8,
+		height: 2,
         curveSegments: 2,
 		bevelEnabled: false,
 		bevelThickness: 10,
@@ -41,8 +43,8 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
     let mesh2 = new THREE.Mesh(geometry, material);
     // geometry.computeBoundingBox()
     geometry.center();
-    mesh2.position.y = -60;
-    mesh2.position.z = -100;
+    mesh2.position.y = -110;
+    mesh2.position.z = -120;
     scene.add(mesh2);
 } );
 
@@ -52,10 +54,10 @@ let catMullArray = [
 ]
 
 for (let i = 0; i < 33; i++) {
-    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - i*30 ))
+    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - (i+1)*30 ))
 }
 for (let i = 0; i < 33; i++) {
-    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + i*30 ))
+    catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
 }
 
 // catMullArray.push(new THREE.Vector3( 0, 0, -1000 ));
@@ -64,10 +66,6 @@ console.log(catMullArray);
 
 let sampleClosedSpline = new THREE.CatmullRomCurve3( catMullArray, true );
 
-// var sampleClosedSpline = new THREE.CatmullRomCurve3( [
-//     new THREE.Vector3( 0, 0, 60 ),
-//     new THREE.Vector3( 0, 0, -900)
-// ], true );
 
 sampleClosedSpline.curveType = "catmullrom";
 sampleClosedSpline.tension = 0.2;
@@ -78,7 +76,7 @@ let camPosIndex = 0;
 
 function updateCamera(ev) {
     ev.preventDefault();
-    camPosIndex = window.scrollY / 2;
+    camPosIndex = window.scrollY / 6;
     let camPos = sampleClosedSpline.getPoint(camPosIndex / 2000);
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
