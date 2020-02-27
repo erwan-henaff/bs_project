@@ -16,18 +16,12 @@ exports.addBattleTest = async (req,res,next) => {
 
     try {
 
-        // let playerTag = req.body.playerTag;
-
         let whichKey = req.body.whichKey;
 
         let Bearer = "";
 
         if (whichKey=== "appkeyDCI") Bearer = `Bearer ${appkeyDCI}`
         else if (whichKey=== "appkeyHome") Bearer = `Bearer ${appkeyHome}`
-
-
-
-        // let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //////////// get the battlelog from API, it's an object with "items" key being an array
@@ -38,8 +32,6 @@ exports.addBattleTest = async (req,res,next) => {
             let playerTag = arrPlayer[counter%3];
             let url = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
 
-            console.log("***************************************************************");
-            console.log("***************************************************************");
             console.log(counter);
             console.log(playerTag);
 

@@ -60,17 +60,6 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
 
 } 
 
-// const makeBrawlerCont = (data) => {
-
-//     let brawlerDiv = document.createElement("div");
-//     brawlerDiv.classList.add(`brawlerDiv`, `brawlerDiv${data.id}`);
-//     let urlPicture = `../assets/brawler-models/${data.id}.png`;
-//     console.log(urlPicture);
-//     brawlerDiv.innerHTML = `${data.name}<br>Power : ${data.power}<br>Rank : ${data.rank}<br>Trophies : ${data.trophies[data.trophies.length -1].trophies} <br>Highest Trophies : ${data.highestTrophies}<img src ="${urlPicture}" alt="picture" width="100%">`;
-
-//     return brawlerDiv;
-// }
-
 const makeBrawlerText = (data, distance) => {
 
     let loader = new THREE.FontLoader();
@@ -107,7 +96,7 @@ Highest Trophies : ${data.highestTrophies}
 
 
         let texture = new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)
-        // let materialProj = new THREE.MeshBasicMaterial( {map : texture})
+        /// create a material in 6 dimension 
         var materialProj2 = 
         [
             null, 
@@ -117,10 +106,10 @@ Highest Trophies : ${data.highestTrophies}
             new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)}), // FRONT SIDE
             null 
         ];
-
+        ////// use the 6th dimension material and project the texture on the front side of the cube 5th value of the material array
         let cube = new THREE.Mesh(geometryCube, materialProj2);
-
-
+        ////// + 6.5 is to get the cube above the text, -4 to get the cube and text lower for the camera.
+        ////// 10 - 20 * distance%2 is there to create a zig zag pattern
         lineCube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
         lineCube.position.z = -40 - distance * 30;
 
