@@ -56,9 +56,11 @@ let catMullArray = [
 for (let i = 0; i < 33; i++) {
     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - (i+1)*30 ))
 }
+catMullArray. push(new THREE.Vector3(0,0, 1100));
 for (let i = 0; i < 33; i++) {
     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
 }
+
 
 // catMullArray.push(new THREE.Vector3( 0, 0, -1000 ));
 
