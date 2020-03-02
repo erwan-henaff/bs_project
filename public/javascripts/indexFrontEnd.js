@@ -56,13 +56,11 @@ let catMullArray = [
 for (let i = 0; i < 33; i++) {
     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - (i+1)*30 ))
 }
-catMullArray. push(new THREE.Vector3(0,0, 1100));
+catMullArray. push(new THREE.Vector3(0,0, -1100));
 for (let i = 0; i < 33; i++) {
     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
 }
 
-
-// catMullArray.push(new THREE.Vector3( 0, 0, -1000 ));
 
 console.log(catMullArray);
 
@@ -78,7 +76,7 @@ let camPosIndex = 0;
 
 function updateCamera(ev) {
     ev.preventDefault();
-    camPosIndex = window.scrollY / 6;
+    camPosIndex = window.scrollY / 12;
     let camPos = sampleClosedSpline.getPoint(camPosIndex / 2000);
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
@@ -134,6 +132,8 @@ let requestData = async (playerTag) => {
             } 
         })  
         // console.log("***************-------------------*****************")
+        
+
         makePlayerContainer(playerInfo.data[0]);
         // return playerInfo.data
 
@@ -144,10 +144,15 @@ let requestData = async (playerTag) => {
 
 
 submit_button.addEventListener("click",()=>{
-  playerTag = tag_input.value;
+    playerTag = tag_input.value;
 
-  console.log(playerTag);
-  requestData(playerTag);
+    console.log(playerTag);
+
+    /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
+    while(scene.children.length > 2){ 
+            scene.remove(scene.children[2]); 
+    }
+    requestData(playerTag);
 
   // request_image(date1);
 })

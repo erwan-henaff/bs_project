@@ -10,7 +10,9 @@ const makePlayerContainer = (data) => {
 
     let loader = new THREE.FontLoader();
 
-    let mesh = loader.load( '../assets/font.json', function ( font ) {
+    // let mesh = loader.load( '../assets/font.json', function ( font ) {
+    loader.load( '../assets/font.json', function ( font ) {
+
 
         let geometry = new THREE.TextGeometry( `
 ${data.name}

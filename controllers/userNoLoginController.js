@@ -99,25 +99,25 @@ exports.addUserNoLogin = async (req,res,next) => {
 
             /////////// this part is to create an array of the trophy level through time
             
-            let trophiesNow = {
+            let trophiesNow = [{
                 trophies : infoUser.trophies
-            };
-            let highestTrophiesNow = {
+            }];
+            let highestTrophiesNow = [{
                 highestTrophies: infoUser.highestTrophies
-            };
-            let _3vs3VictoriesNow = {
+            }];
+            let _3vs3VictoriesNow = [{
                 '3vs3Victories': infoUser['3vs3Victories']
-            };
-            let soloVictoriesNow = {
+            }];
+            let soloVictoriesNow = [{
                 soloVictories: infoUser.soloVictories
-            };
-            let duoVictoriesNow = {
+            }];
+            let duoVictoriesNow = [{
                 duoVictories: infoUser.duoVictories
-            };
+            }];
             let brawlersTrophiesNow = infoUser.brawlers.map(el=> {
-                return  {
+                return  [{
                     trophies : el.trophies
-                }
+                }]
             });
 
             delete infoUser.trophies;
@@ -130,17 +130,25 @@ exports.addUserNoLogin = async (req,res,next) => {
 
     
             const user = new User(infoUser);
-            user.trophies.push(trophiesNow);
-            user.highestTrophies.push(highestTrophiesNow);
-            user['3vs3Victories'].push(_3vs3VictoriesNow);
-            user.soloVictories.push(soloVictoriesNow);
-            user.duoVictories.push(duoVictoriesNow);
+            user.trophies = trophiesNow;
+            user.highestTrophies = highestTrophiesNow;
+            user['3vs3Victories'] = _3vs3VictoriesNow;
+            user.soloVictories = soloVictoriesNow;
+            user.duoVictories = duoVictoriesNow;
 
-            user.brawlers.forEach((el,index) => el.trophies.push(brawlersTrophiesNow[index]));
+            user.brawlers.forEach((el,index) => el.trophies = brawlersTrophiesNow[index]);
+
+            // user.trophies.push(trophiesNow);
+            // user.highestTrophies.push(highestTrophiesNow);
+            // user['3vs3Victories'].push(_3vs3VictoriesNow);
+            // user.soloVictories.push(soloVictoriesNow);
+            // user.duoVictories.push(duoVictoriesNow);
+
+            // user.brawlers.forEach((el,index) => el.trophies.push(brawlersTrophiesNow[index]));
             
             await user.save();
             console.log(`${infoUser.name} with tag ${infoUser.tag} has been saved`);
-            checkUserExist = user;
+            infoUser = user;
             
         }
 
