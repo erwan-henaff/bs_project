@@ -157,4 +157,7 @@ submit_button.addEventListener("click",()=>{
   // request_image(date1);
 })
 
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+}
 

@@ -8,7 +8,7 @@ let key = require('../env/key');
 let appkeyDCI = key.appkeyDCI;
 let appkeyHome = key.appkeyHome;
 
-let sliceIndex = -1;
+// let sliceIndex = -1;
 
 let trigger = false;
 
@@ -39,7 +39,7 @@ exports.addBattlesHighRank = async (req,res,next) => {
             console.log("in the trigger === true block, return sliceindex")
 
 
-            sliceIndex++;
+            // sliceIndex++;
             // if (sliceIndex > 1) sliceIndex = 0;
 
             const getListBestPlayers = await axios({
@@ -126,7 +126,7 @@ exports.addBattlesHighRank = async (req,res,next) => {
                     });
                     console.log(`***********************************************inside the ${i} setTimeout loop trigger = true `)
 
-                }, 30000*i)
+                }, 10000*i)
 
                 ///// above the setTimeout function is triggered 30 seconds * i  inside the for loop, so 8 setTimeout or launched
 
@@ -140,9 +140,7 @@ exports.addBattlesHighRank = async (req,res,next) => {
             //     .send({message : "saved the results of the 200 best players"});   
         }
         else {
-            console.log("in the trigger = false block, return 0")
-            // sliceIndex = -1
-            // return -1
+            console.log("in the trigger = false block")
             res
                 .status(200)
                 .send({message : "didn't trigger the collection of data"})

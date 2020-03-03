@@ -150,13 +150,7 @@ exports.addUserNoLogin = async (req,res,next) => {
             console.log(`${infoUser.name} with tag ${infoUser.tag} has been saved`);
             infoUser = user;
             
-        }
-
-//// warning : I will need to check if pushing still works when a player get a new brawler 
-//// furthermore the logic below for the brawler's trophy history repose on 
-//// the assumption the brawler's order in the array is always the same
-//// I must store an object with brawler id and trophy level in the array to avoid a bug when 
-//// a new brawler is added. It will also handle the issue of the order in the array 
+        } 
 
         else {
 
@@ -177,11 +171,7 @@ exports.addUserNoLogin = async (req,res,next) => {
             let duoVictoriesNow = {
                 duoVictories: infoUser.duoVictories
             };
-            let brawlersTrophiesNow = infoUser.brawlers.map(el=> {
-                return  {
-                    trophies : el.trophies
-                }
-            });
+            
             ///// push the data into the user retrieved from our database 
 
             checkUserExist.trophies.push(trophiesNow);
@@ -190,8 +180,15 @@ exports.addUserNoLogin = async (req,res,next) => {
             checkUserExist.soloVictories.push(soloVictoriesNow);
             checkUserExist.duoVictories.push(duoVictoriesNow);
 
-            checkUserExist.brawlers.forEach((el,index) => (el.trophies.push(brawlersTrophiesNow[index])));
-
+            for (let i = 0; i < checkUserExist.brawlers.length; i++) {
+                for (let j = 0; j < infoUser.brawlers.length; j++) {
+                    if ( checkUserExist.brawlers[i].id === infoUser.brawlers[j].id ) {
+                        checkUserExist.brawlers[i].trophies.push({
+                            trophies : infoUser.brawlers[j].trophies
+                        })
+                    }                   
+                }
+            }            
             //// below is the line that secures the data in case a new brawler has been unlocked,
             //// if not, all will be replaced by the for loop below. 
             infoUser.brawlers.forEach(el => {
@@ -199,9 +196,6 @@ exports.addUserNoLogin = async (req,res,next) => {
                                 trophies : el.trophies
                             }]
             })
-
-            // infoUser.brawlers.map((el,index) => (el.trophies = brawlersTrophiesNow[index]));
-
 
             //// put the new data into the user retrieved from supercell api 
 
@@ -217,37 +211,22 @@ exports.addUserNoLogin = async (req,res,next) => {
             for (let i = 0; i < infoUser.brawlers.length; i++) {
                 for (let j = 0; j < checkUserExist.brawlers.length; j++) {
                     if (infoUser.brawlers[i].id === checkUserExist.brawlers[j].id) {
-                        infoUser.brawlers.trophies = checkUserExist.brawlers.trophies
+                        infoUser.brawlers[i].trophies = checkUserExist.brawlers[j].trophies
                     }                   
                 }
             }
 
-            // checkUserExist.trophies.push(trophiesNow);
-            // checkUserExist.highestTrophies.push(highestTrophiesNow);
-            // checkUserExist['3vs3Victories'].push(_3vs3VictoriesNow);
-            // checkUserExist.soloVictories.push(soloVictoriesNow);
-            // checkUserExist.duoVictories.push(duoVictoriesNow);
-
-            // checkUserExist.brawlers.forEach((el,index) => (el.trophies.push(brawlersTrophiesNow[index])));
-
+            //////// finally save the new data with right format in the database 
             await User.replaceOne({ tag : infoUser.tag}, infoUser);
-
-            // await User.replaceOne({ tag : checkUserExist.tag}, checkUserExist);
-
 
             console.log(`new trophies level of ${infoUser.name} with tag ${infoUser.tag} has been saved`);
         }
 
-        
-
         ////////////////////////////////////// send back to frontend the response with user infos and battlelog
-
         res
                     .status(200)
                     .send([infoUser, getBattleLog.data.items]);   
-
-
-    
+   
     } catch (e) {
         next(e);
     } 
