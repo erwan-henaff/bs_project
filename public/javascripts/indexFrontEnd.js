@@ -12,9 +12,15 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 let cont = document.getElementById('mainCont');
 cont.appendChild( renderer.domElement );
 
+renderercss = new THREE.CSS3DRenderer();
+renderercss.setSize(window.innerWidth, window.innerHeight);
+renderercss.domElement.style.position = 'absolute';
+renderercss.domElement.style.zIndex = 3;
+renderercss.domElement.style.top = 0;
+cont.appendChild( renderercss.domElement );
+
 
 var geometry = new THREE.IcosahedronGeometry(7, 2);
-// var material = new THREE.MeshLambertMaterial( { color: 0x5029ff } );
 var edges = new THREE.EdgesGeometry( geometry );
 var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
 line.position.y = -40;
@@ -109,7 +115,7 @@ function animate() {
     // camera.position.x = camPos.x;
     // camera.position.y = camPos.y;
     // camera.position.z = camPos.z;
-
+    renderercss.render( scene, camera)
     renderer.render( scene, camera );
     line.rotation.y += 0.005;
 }

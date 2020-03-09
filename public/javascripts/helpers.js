@@ -7,15 +7,24 @@ const makePlayerContainer = (data) => {
 
     console.log(data);
 
+    var divNamePlayer = document.createElement('div');
+    divNamePlayer.innerHTML = `${data.name}`;
+    divNamePlayer.style.color = "rgb(255, 255, 150)";
+    divNamePlayer.style.fontSize = "2px";
+
+    var cssObject = new THREE.CSS3DObject(divNamePlayer);
+    cssObject.position.x = 0;
+    cssObject.position.y = 11;
+    cssObject.position.z = 20;
+
+    scene.add(cssObject);
+
 
     let loader = new THREE.FontLoader();
-
     // let mesh = loader.load( '../assets/font.json', function ( font ) {
     loader.load( '../assets/font.json', function ( font ) {
 
-
         let geometry = new THREE.TextGeometry( `
-${data.name}
 tag : ${data.tag}
 trophies : ${data.trophies[data.trophies.length -1].trophies}
 highest trophies : ${data.highestTrophies[data.highestTrophies.length -1].highestTrophies}
@@ -92,7 +101,7 @@ Highest Trophies : ${data.highestTrophies}
         mesh2.position.z = -40 - distance * 30;
         scene.add(mesh2);
 
-        let geometryCube = new THREE.BoxGeometry( 5, 7, 1 );
+        let geometryCube = new THREE.BoxGeometry( 5, 7, 2 );
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
 

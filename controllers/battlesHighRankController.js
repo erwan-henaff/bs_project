@@ -128,16 +128,13 @@ exports.addBattlesHighRank = async (req,res,next) => {
 
                 }, 10000*i)
 
-                ///// above the setTimeout function is triggered 30 seconds * i  inside the for loop, so 8 setTimeout or launched
+                ///// above the setTimeout function is triggered 10 seconds * i  inside the for loop, so 8 setTimeout or launched
 
                 console.log(`***********************************************inside the ${i} loop trigger = true `)
 
 
             }
-
-            // res
-            //     .status(200)
-            //     .send({message : "saved the results of the 200 best players"});   
+          
         }
         else {
             console.log("in the trigger = false block")
