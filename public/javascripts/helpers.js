@@ -17,7 +17,7 @@ const makePlayerContainer = (data) => {
     cssObject.position.y = 11;
     cssObject.position.z = 20;
 
-    scene.add(cssObject);
+    sceneCSS.add(cssObject);
 
 
     let loader = new THREE.FontLoader();
