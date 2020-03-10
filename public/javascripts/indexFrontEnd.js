@@ -9,13 +9,16 @@ camera.position.z = 60;
 camera.lookAt(0,0,-1200);
 
 // directionalLight = new THREE.DirectionalLight(0xffffff,100);
-// directionalLight.position.set(-50,0,200);
+// directionalLight.position.set(100,100,0);
 // // directionalLight.castShadow = true;
 // scene.add(directionalLight);
-light = new THREE.PointLight(0xc4c4c4,10);
+light = new THREE.PointLight(0x444444,10);
 light.position.set(0,300,500);
 scene.add(light);
 
+// light2 = new THREE.PointLight(0x444444,10);
+// light2.position.set(0,-200,500);
+// scene.add(light2);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -37,14 +40,6 @@ cont.appendChild( renderercss.domElement );
 ////// beware zIndex
 // renderercss.domElement.appendChild(renderer.domElement);
 cont.appendChild(renderer.domElement);
-
-
-// var geometry = new THREE.IcosahedronGeometry(7, 2);
-// var edges = new THREE.EdgesGeometry( geometry );
-// var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
-// line.position.y = -40;
-// line.position.z = -30;
-// scene.add( line );
 
 
 var loader = new THREE.FontLoader();
@@ -73,27 +68,20 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
 
 
 let _3Dloader = new THREE.GLTFLoader();
-let meshShelly = false
+let meshShelly = false ;
 _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
-
-    console.log("in the gltf loader");
     gltf.scene.children[0].position.y = -70;
     gltf.scene.children[0].position.z = -60;
     meshShelly = gltf.scene;
-
     gltf.scene.children[0].scale.set(0.03,0.03,0.03);
     scene.add(gltf.scene);
-    // renderer.render(scene, camera);
-    // animate()
 })
 
-let result = false;
 
 let catMullArray = [
     new THREE.Vector3( 0, 0, 60 ),
     new THREE.Vector3( 0, 0, 20 )
 ]
-
 for (let i = 0; i < 33; i++) {
     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), - (i+1)*30 ))
 }
@@ -104,9 +92,8 @@ for (let i = 0; i < 33; i++) {
 let sampleClosedSpline = new THREE.CatmullRomCurve3( catMullArray, true );
 sampleClosedSpline.curveType = "catmullrom";
 sampleClosedSpline.tension = 0.2;
+
 let camPosIndex = 0;
-
-
 
 function updateCamera(ev) {
     ev.preventDefault();
@@ -116,36 +103,24 @@ function updateCamera(ev) {
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
     console.log(camPos.z, camPos.y);
-
 }
 window.addEventListener("scroll", updateCamera);
 
 function animate() {
     requestAnimationFrame( animate );
-    // camPosIndex++;
-    // if (camPosIndex > 5000) {
-    //     camPosIndex = 0;
-    // }
-    // var camPos = sampleClosedSpline.getPoint(camPosIndex / 5000);
-    // camera.position.x = camPos.x;
-    // camera.position.y = camPos.y;
-    // camera.position.z = camPos.z;
     renderercss.render( sceneCSS, camera)
     renderer.render( scene, camera );
-    // line.rotation.y += 0.005;
+    //// once the 3d model is loaded make it rotate
     if (meshShelly) {
         meshShelly.children[0].rotation.z += 0.005;
-    }
-    
+    }    
 }
 animate();
-
 
 
 let requestData = async (playerTag) => {
     try {
         const url_final = "http://localhost:3000/usernologin/"
-
         const playerInfo = await axios({
             method: 'POST',
             url: url_final,
@@ -155,7 +130,6 @@ let requestData = async (playerTag) => {
             } 
         })  
         makePlayerContainer(playerInfo.data[0]);
-
     } catch (error) {
         console.log(error);
     }   

@@ -93,7 +93,7 @@ exports.addBattlesHighRank = async (req,res,next) => {
                             const battle = new BattleHighRank (element);
                             //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
                             //// return null is none, one object if exist, or error if error
-                            const checkBattleExist = await BattleHighRank.findOne({battleTime: battle.battleTime}, (err, result)=> {
+                            const checkBattleExist = await BattleHighRank.findOne({battleTime: battle.battleTime, "event.mode" : battle.event.mode}, (err, result)=> {
                                 if (err) {
                                     return err
                                 }
@@ -113,7 +113,7 @@ exports.addBattlesHighRank = async (req,res,next) => {
                             ////////////////////////////////////////////////////////////////////////////////////////////////////
                             ///////// important : send the message at the end of all the asynchronous events (624 = 25  * 25 - 1) 
                             if (i===7 && index === 624) {
-                                console.log(`***********************************************end of the ${i} loop and ${index} for each`)
+                                console.log(`************end of the ${i} loop and ${index} for each`)
                                 res
                                     .status(200)
                                     .send({message : "saved the results of the 200 best players"});   
@@ -124,13 +124,13 @@ exports.addBattlesHighRank = async (req,res,next) => {
                         }
                         
                     });
-                    console.log(`***********************************************inside the ${i} setTimeout loop trigger = true `)
+                    console.log(`************inside the ${i} setTimeout loop trigger = true `)
 
                 }, 10000*i)
 
                 ///// above the setTimeout function is triggered 10 seconds * i  inside the for loop, so 8 setTimeout or launched
 
-                console.log(`***********************************************inside the ${i} loop trigger = true `)
+                console.log(`****************inside the ${i} loop trigger = true `)
 
 
             }

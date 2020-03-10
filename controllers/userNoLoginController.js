@@ -56,7 +56,7 @@ exports.addUserNoLogin = async (req,res,next) => {
                 //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
                 //// return null is none, one object if exist, or error if error
 
-                const checkBattleExist = await Battle.findOne({battleTime: battle.battleTime}, (err, result)=> {
+                const checkBattleExist = await Battle.findOne({battleTime: battle.battleTime, "event.mode" : battle.event.mode}, (err, result)=> {
                     if (err) {
                         return err
                     }
