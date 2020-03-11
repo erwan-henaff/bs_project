@@ -87,35 +87,13 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
 })
 
-//////////////////////////////////////////////////
-///// this whole part below should apply in the makebrawlertext function in helpers file
 
-// let OBJloader = new THREE.OBJLoader();
-// let meshModelTest = false ;
-
-// OBJloader.load('../assets/3Dmodels/allModels/m16000002.obj', function (objM) {
-    
-//     let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/bull.png`)});
-//     materialCharacter.map.wrapS = 1003;
-//     materialCharacter.map.wrapT = 1003;
-
-//     console.log("first", materialCharacter)
-
-//     meshTest = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
-
-//     meshModelTest = meshTest;
-//     meshTest.scale.set(0.03,0.03,0.03);
-//     meshTest.position.y = -80;
-//     meshTest.position.z = 250;
-    
-//     scene.add(meshModelTest);
-
-// })
 
 ////// with that we set the path of the camera 
 let catMullArray = [
     new THREE.Vector3( 0, 0, 400 ),
-    new THREE.Vector3( 0, 0, 200 ), 
+    new THREE.Vector3( 0, 0, 300 ), 
+    new THREE.Vector3( 0, 0, 200 )
     new THREE.Vector3( 0, 0, 100 )
 ]
 
@@ -145,6 +123,12 @@ function updateCamera(ev) {
 }
 window.addEventListener("scroll", updateCamera);
 
+////// array in which the models of characters are stored, 
+////// passed into the makeplayercont function
+////// use : make rotations
+let meshModelTest = [] ;
+
+
 function animate() {
     requestAnimationFrame( animate );
     renderercss.render( sceneCSS, camera)
@@ -153,12 +137,9 @@ function animate() {
     if (meshShelly) {
         meshShelly.children[0].rotation.z += 0.02;
     }   
-    // if (objModel) {
-    //     objModel.rotation.y += 0.02;
-    // }   
-    // if (meshModelTest) {
-    //     meshModelTest.rotation.y += 0.02;
-    // }      
+    meshModelTest.forEach((el, index) => {
+        el.rotation.y+= 0.02 * (index%2 - 0.5) 
+    })
 }
 animate();
 
@@ -174,7 +155,7 @@ let requestData = async (playerTag) => {
                 whichKey: "appkeyDCI"
             } 
         })  
-        makePlayerContainer(playerInfo.data[0]);
+        makePlayerContainer(playerInfo.data[0], meshModelTest);
     } catch (error) {
         console.log(error);
     }   

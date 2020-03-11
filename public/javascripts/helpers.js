@@ -3,7 +3,7 @@ let playerInfoCont = document.getElementById("playerInfoCont");
 
 
 
-const makePlayerContainer = (data) => {
+const makePlayerContainer = (data, meshModelTest) => {
 
     console.log(data);
 
@@ -65,13 +65,16 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
     ///// handles the text for each brawlers 
 
     for (let i = 0; i < data.brawlers.length; i++) {
-        makeBrawlerText(data.brawlers[i], i);
+        makeBrawlerText(data.brawlers[i], i, meshModelTest);
         
     }
 
 } 
 
-const makeBrawlerText = (data, distance) => {
+////  meshModelTest = [] defined in indexFrontEnd file ;
+
+
+const makeBrawlerText = (data, distance, meshModelTest) => {
 
     let loader = new THREE.FontLoader();
 
@@ -109,6 +112,31 @@ Highest Trophies : ${data.highestTrophies}
         scene.add(mesh2);
     });
 
+    if (data.name === "NITA" || data.name === "BULL" || data.name === "BARLEY" || data.name === "RICO" || data.name === "BROCK" || data.name === "SPIKE") {
+        let OBJloader = new THREE.OBJLoader();
+
+        OBJloader.load(`../assets/3Dmodels/allModels/m${data.id}.obj`, function (objM) {
+            
+            let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/${data.name}.png`)});
+            materialCharacter.map.wrapS = 1003;
+            materialCharacter.map.wrapT = 1003;
+
+            meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
+
+            // meshModelTest = meshTest;
+            meshCharacter.scale.set(0.005,0.005,0.005);
+            meshCharacter.position.y =  13 - 1.5 * (distance);
+            meshCharacter.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
+            meshCharacter.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+            meshCharacter.rotation.y = distance * Math.PI / 6;
+            
+            meshModelTest.push(meshCharacter);
+
+            scene.add(meshCharacter);
+        });
+    }
+
+    else {
         let geometryCube = new THREE.BoxGeometry( 5, 7, 2 );
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
@@ -141,6 +169,8 @@ Highest Trophies : ${data.highestTrophies}
 
         scene.add( lineCube );
         scene.add( cube );
+    }
+        
 
 } ;
 
