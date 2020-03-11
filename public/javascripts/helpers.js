@@ -15,7 +15,7 @@ const makePlayerContainer = (data) => {
     var cssObject = new THREE.CSS3DObject(divNamePlayer);
     cssObject.position.x = 0;
     cssObject.position.y = 11;
-    cssObject.position.z = 20;
+    cssObject.position.z = 350;
 
     sceneCSS.add(cssObject);
 
@@ -41,7 +41,7 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
         `, {
             font: font,
             size: 1,
-            height: 0.2,
+            height: 0.1,
             curveSegments: 2,
             bevelEnabled: false,
             bevelThickness: 10,
@@ -58,7 +58,7 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
         // mesh2.position.x = -10;
 
         mesh2.position.y = 0;
-        mesh2.position.z = 20;
+        mesh2.position.z = 350;
         scene.add(mesh2);
     } );
 
@@ -97,18 +97,26 @@ Highest Trophies : ${data.highestTrophies}
         let material = new THREE.MeshNormalMaterial();    
         let mesh2 = new THREE.Mesh(geometry, material);
         geometry.center();
-        mesh2.position.y = -4 + 10 - 20 * (distance%2);
-        mesh2.position.z = -40 - distance * 30;
+        // mesh2.position.y = -4 + 10 - 20 * (distance%2);
+        // mesh2.position.z = -40 - distance * 30;
+
+        mesh2.position.y = 10 - 1.5 * (distance) ;
+        mesh2.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
+        mesh2.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        mesh2.rotation.y = distance * Math.PI / 6;
+
+
         scene.add(mesh2);
+    });
 
         let geometryCube = new THREE.BoxGeometry( 5, 7, 2 );
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
 
 
-        let texture = new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)
+        // let texture = new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)
         /// create a material in 6 dimension 
-        var materialProj2 = 
+        let materialProj2 = 
         [
             null, 
             null, 
@@ -121,15 +129,18 @@ Highest Trophies : ${data.highestTrophies}
         let cube = new THREE.Mesh(geometryCube, materialProj2);
         ////// + 6.5 is to get the cube above the text, -4 to get the cube and text lower for the camera.
         ////// 10 - 20 * distance%2 is there to create a zig zag pattern
-        lineCube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
-        lineCube.position.z = -40 - distance * 30;
+        lineCube.position.y = 6.5 + 10 - 1.5  * (distance);
+        lineCube.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
+        lineCube.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        lineCube.rotation.y =  distance * Math.PI / 6;
 
-        cube.position.y = -4 + 6.5 + 10 - 20 * (distance%2);
-        cube.position.z = -40 - distance * 30;
+        cube.position.y = 6.5 + 10 - 1.5 * (distance);
+        cube.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
+        cube.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        cube.rotation.y = distance * Math.PI / 6;
 
         scene.add( lineCube );
         scene.add( cube );
 
-    } );
+} ;
 
-}

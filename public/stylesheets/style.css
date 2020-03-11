@@ -6,6 +6,8 @@ body {
   background-color: rgb(33, 41, 116);
   color: white;
   height: 13000px;
+
+  scroll-behavior: smooth;
 }
 
 body::-webkit-scrollbar {
