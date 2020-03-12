@@ -146,9 +146,7 @@ function updateCamera(camPosIndex) {
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
-    console.log(camPos.z, camPos.y);
     camera.lookAt(0, camPos.y ,0);
-
 }
 //// bellow is the scroll function that will feed/define the 
 //// camposIndex of the updateCamera function inside the requestAnimationFrame Loop of animate function 
@@ -174,7 +172,15 @@ function animate() {
         meshShelly.children[0].rotation.z += 0.02;
     }   
     meshModelTest.forEach((el, index) => {
-        el.rotation.y+= 0.02 * (index%2 - 0.5) 
+        /// handle the special case of character shelly: rotation's behaviour is different.
+        if (el.name === "RootNode_(gltf_orientation_matrix)") {
+            el.rotation.z += 0.02 * (index%2 - 0.5); 
+        }
+        else {
+            el.rotation.y+= 0.02 * (index%2 - 0.5);
+        }
+        
+
     })
     // if (meshModelTest2) {
     //     meshModelTest2.rotation.y+= 0.02
@@ -229,3 +235,38 @@ window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 }
 
+
+////// that part is for the navigation menu and the related burger 
+document.getElementById("back").addEventListener("click", goback);
+document.getElementById("link1").addEventListener("click", goto);
+document.getElementById("link2").addEventListener("click", goto2);
+function goback () {
+    window.scrollTo(0,0)
+}
+function goto () {
+    window.scrollTo(0,450)
+}
+function goto2 () {
+    window.scrollTo(0,2500)
+}
+
+let burger = document.getElementById("burger");
+burger.addEventListener("click", transform)
+function transform () {
+    let line1 = document.getElementById("line1");
+    let line2 = document.getElementById("line2");
+    let line3 = document.getElementById("line3");
+    let line4 = document.getElementById("line4");
+    let line12 = document.getElementById("line12");
+    let line22 = document.getElementById("line22");
+    let line32 = document.getElementById("line32");
+    let line42 = document.getElementById("line42");
+    line1.classList.toggle("toggleline1");
+    line2.classList.toggle("toggleline2");
+    line3.classList.toggle("toggleline3");
+    line4.classList.toggle("toggleline4");
+    line12.classList.toggle("toggleline12");
+    line22.classList.toggle("toggleline22");
+    line32.classList.toggle("toggleline32");
+    line42.classList.toggle("toggleline42");
+}

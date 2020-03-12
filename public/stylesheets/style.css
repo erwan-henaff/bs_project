@@ -37,7 +37,7 @@ header div {
 }
 #tag_input {
   display: block;
-  height: 40px;
+  height: 30px;
   width: 30%;
   box-sizing: border-box;
   font-weight: bolder;
@@ -48,10 +48,10 @@ header div {
 }
 #submit_button_label {
   box-sizing: border-box;
-  padding: 10px;
+  padding: 5px;
   display: block;
   width: 50%;
-  height: 40px;
+  height: 30px;
   background-color: cornflowerblue;
   color: white;
 }
@@ -62,7 +62,99 @@ header div {
   position: sticky;
   top :0;
 }
-#playerInfoCont {
+
+#burger {
+  position: fixed;
+  display: block;
+  top 0;
+  right:0;
+  width: 50px;
+  height:50px;
+  transition: 1.4s;
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+  z-index: 1001;
+}
+#burgericon {
+  position: relative;
+  box-sizing: border-box;
+  width:50px;
+  height:50px;
+  /* background: linear-gradient(rgb(211, 211, 211), rgb(255, 213, 136)); */
+  border: 2px solid rgb(0, 204, 255);
+  border-radius: 8px;    
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 15px;
+  align-items: center;
+}
+#burgericon2 {
+  position: relative;
+  top: -50px;
+  box-sizing: border-box;
+  width:50px;
+  height:50px;
+  /* background: linear-gradient(rgb(211, 211, 211), rgb(255, 213, 136)); */
+  border: 2px solid rgb(0, 204, 255);
+  border-radius: 8px;    
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 15px;
+  align-items: center;
+}
+#line1, #line2, #line3, #line4, #line12, #line22, #line32, #line42 {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background-color: rgb(0, 204, 255);
+  position: relative;
+  transition: 0.7s;
+}
+.toggleline1 {
+  transform:translate(-8px, -8px) rotate(225deg) ; 
+}
+.toggleline2 {
+  transform:translate( 8px,-8px) rotate(225deg);
+}
+.toggleline3 {
+  transform:translate(-8px,8px) rotate(225deg); 
+}
+.toggleline4 {
+  transform:translate( 8px, 8px) rotate(225deg);
+}
+.toggleline12 {
+  transform:translate(-1px, -1px) rotate(225deg) ; 
+}
+.toggleline22 {
+  transform:translate( 1px,-1px) rotate(225deg);
+}
+.toggleline32 {
+  transform:translate(-1px,1px) rotate(225deg); 
+}
+.toggleline42 {
+  transform:translate( 1px, 1px) rotate(225deg);
+}
+
+
+#menu {
+  position: fixed;
+  top: 50px;
+  right:0;
+  width: 30%;
+  text-align: right;
+  z-index: 10001;
+
+}
+
+#link1  {
+  z-index: 10002;
+}
+
+
+/* #playerInfoCont {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -91,4 +183,4 @@ header div {
   padding: 15px;
   text-align: center;
   background-color: rgb(7, 38, 104);
-}
+} */

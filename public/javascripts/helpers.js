@@ -1,8 +1,5 @@
 let playerInfoCont = document.getElementById("playerInfoCont");
 
-
-
-
 const makePlayerContainer = (data, meshModelTest) => {
 
     console.log(data);
@@ -135,15 +132,27 @@ Highest Trophies : ${data.highestTrophies}
             scene.add(meshCharacter);
         });
     }
+    else if (data.name === "SHELLY") {
+        let _3Dloader = new THREE.GLTFLoader();
+        // let meshShelly = false ;
+        _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltfShelly) {
+            gltfShelly.scene.children[0].scale.set(0.005,0.005,0.005);
+            gltfShelly.scene.children[0].position.y = 13 - 1.5 * (distance);
+            gltfShelly.scene.children[0].position.z = 20 * Math.cos( 2 * Math.PI * distance / 12);
+            gltfShelly.scene.children[0].position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+            gltfShelly.scene.children[0].rotation.y = distance * Math.PI / 6;
+            meshModelTest.push(gltfShelly.scene.children[0]);
+
+            // meshShelly = gltf.scene;
+            scene.add(gltfShelly.scene);
+        })
+    }
 
     else {
         let geometryCube = new THREE.BoxGeometry( 5, 7, 2 );
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
 
-
-        // let texture = new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)
-        /// create a material in 6 dimension 
         let materialProj2 = 
         [
             null, 
