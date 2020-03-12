@@ -89,15 +89,15 @@ Highest Trophies : ${data.highestTrophies}
 `           , {
             font: font,
             size: 0.5,
-            height: 0.2,
-            curveSegments: 2,
+            height: 0.1,
+            curveSegments: 3,
             bevelEnabled: false,
             bevelThickness: 10,
             bevelSize: 8,
             bevelOffset: 0,
             bevelSegments: 5
         } );
-        let material = new THREE.MeshNormalMaterial();    
+        let material = new THREE.MeshBasicMaterial({color: 0x0081d6});    
         let mesh2 = new THREE.Mesh(geometry, material);
         geometry.center();
         // mesh2.position.y = -4 + 10 - 20 * (distance%2);
@@ -112,7 +112,7 @@ Highest Trophies : ${data.highestTrophies}
         scene.add(mesh2);
     });
 
-    if (data.name === "NITA" || data.name === "BULL" || data.name === "BARLEY" || data.name === "RICO" || data.name === "BROCK" || data.name === "SPIKE") {
+    if (data.name === "NITA" || data.name === "BULL" || data.name === "BARLEY" || data.name === "RICO" || data.name === "BROCK" || data.name === "SPIKE" || data.name === "CARL" || data.name === "DYNAMIKE" || data.name === "MORTIS" || data.name === "GENE" || data.name === "LEON" || data.name === "TARA" || data.name === "POCO") {
         let OBJloader = new THREE.OBJLoader();
 
         OBJloader.load(`../assets/3Dmodels/allModels/m${data.id}.obj`, function (objM) {
@@ -121,7 +121,7 @@ Highest Trophies : ${data.highestTrophies}
             materialCharacter.map.wrapS = 1003;
             materialCharacter.map.wrapT = 1003;
 
-            meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
+            let meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
 
             // meshModelTest = meshTest;
             meshCharacter.scale.set(0.005,0.005,0.005);

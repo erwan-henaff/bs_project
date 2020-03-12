@@ -10,17 +10,27 @@ camera.lookAt(0,0,0);
 
 // control.target = new THREE.Vector3(targetX, targetY, targetZ);
 
-// directionalLight = new THREE.DirectionalLight(0xffffff,100);
-// directionalLight.position.set(100,100,0);
-// // directionalLight.castShadow = true;
-// scene.add(directionalLight);
+
 light = new THREE.PointLight(0x444444,10);
 light.position.set(0,300,500);
 scene.add(light);
 
-// light2 = new THREE.PointLight(0x444444,10);
-// light2.position.set(0,-200,500);
-// scene.add(light2);
+light2 = new THREE.PointLight(0x888888,10);
+light2.position.set(0, 0, 100);
+scene.add(light2);
+
+light3 = new THREE.PointLight(0x888888,10);
+light3.position.set(0, 0, - 100);
+scene.add(light3);
+
+
+light4 = new THREE.PointLight(0x888888,10);
+light4.position.set(0, 100, 0);
+scene.add(light3);
+
+light5 = new THREE.PointLight(0x888888,10);
+light5.position.set(0, - 100, 0);
+scene.add(light3);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -87,18 +97,38 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
 })
 
+// let OBJloader = new THREE.OBJLoader();
+
+// let meshModelTest2 = false;
+// OBJloader.load(`../assets/3Dmodels/allModels/m16000011.obj`, function (objM) {
+    
+//     let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/MORTIS.png`)});
+//     materialCharacter.map.wrapS = 1003;
+//     materialCharacter.map.wrapT = 1003;
+
+//     meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
+
+//     meshModelTest2 = meshCharacter;
+//     meshCharacter.scale.set(0.04,0.04,0.04);
+//     meshCharacter.position.y =  -80;
+//     meshCharacter.position.z =  250;
+    
+//     // meshModelTest.push(meshCharacter);
+
+//     scene.add(meshCharacter);
+// });
 
 
 ////// with that we set the path of the camera 
 let catMullArray = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 0, 0, 300 ), 
-    new THREE.Vector3( 0, 0, 200 )
-    new THREE.Vector3( 0, 0, 100 )
+    new THREE.Vector3( 0, 10, 100 ),
+    new THREE.Vector3( 0, 15, 50 )
 ]
 
 for (let i = 0; i < 50; i++) {
-    catMullArray.push(new THREE.Vector3( 50 * Math.sin( 2 * Math.PI * i / 12), 10 - 1.5 * i, 50 * Math.cos( 2 * Math.PI * i / 12)));
+    catMullArray.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 12), 13 - 1.5 * i, 35 * Math.cos( 2 * Math.PI * i / 12)));
 }
 catMullArray. push(new THREE.Vector3(0,0, 200));
 // for (let i = 0; i < 33; i++) {
@@ -108,11 +138,10 @@ let sampleClosedSpline = new THREE.CatmullRomCurve3( catMullArray, true );
 sampleClosedSpline.curveType = "catmullrom";
 sampleClosedSpline.tension = 0.2;
 
+let y_scroll_position = 0; 
 let camPosIndex = 0;
 
-function updateCamera(ev) {
-    ev.preventDefault();
-    camPosIndex = window.scrollY / 6;
+function updateCamera(camPosIndex) {
     let camPos = sampleClosedSpline.getPoint(camPosIndex / 2000);
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
@@ -121,7 +150,14 @@ function updateCamera(ev) {
     camera.lookAt(0, camPos.y ,0);
 
 }
-window.addEventListener("scroll", updateCamera);
+//// bellow is the scroll function that will feed/define the 
+//// camposIndex of the updateCamera function inside the requestAnimationFrame Loop of animate function 
+
+window.addEventListener("scroll", scroll);
+function scroll () {
+    // ev.preventDefault();
+    y_scroll_position = window.scrollY/6
+}
 
 ////// array in which the models of characters are stored, 
 ////// passed into the makeplayercont function
@@ -133,13 +169,23 @@ function animate() {
     requestAnimationFrame( animate );
     renderercss.render( sceneCSS, camera)
     renderer.render( scene, camera );
-    // once the 3d model is loaded make it rotate
+    //// once the 3d model is loaded make it rotate
     if (meshShelly) {
         meshShelly.children[0].rotation.z += 0.02;
     }   
     meshModelTest.forEach((el, index) => {
         el.rotation.y+= 0.02 * (index%2 - 0.5) 
     })
+    // if (meshModelTest2) {
+    //     meshModelTest2.rotation.y+= 0.02
+    // }
+
+    ///// this part is to create inertia with the scrolling
+    ///// y_scroll_position is updated through scroll callback function 
+    camPosIndex = 0.96 * camPosIndex + 0.04 * y_scroll_position;
+    camPosIndex = Math.floor(camPosIndex * 100) /100;
+    updateCamera(camPosIndex); 
+
 }
 animate();
 
@@ -168,8 +214,8 @@ submit_button.addEventListener("click",()=>{
     console.log(playerTag);
 
     /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
-    while(scene.children.length > 4){ 
-            scene.remove(scene.children[4]); 
+    while(scene.children.length > 8){ 
+            scene.remove(scene.children[8]); 
     }
     while(sceneCSS.children.length > 0){ 
         sceneCSS.remove(sceneCSS.children[0]); 
