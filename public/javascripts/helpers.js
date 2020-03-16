@@ -8,6 +8,8 @@ const makePlayerContainer = (data, meshModelTest) => {
     divNamePlayer.innerHTML = `${data.name}`;
     divNamePlayer.style.color = "rgb(255, 255, 150)";
     divNamePlayer.style.fontSize = "2px";
+    divNamePlayer.style.padding = "1px";
+
 
     var cssObject = new THREE.CSS3DObject(divNamePlayer);
     cssObject.position.x = 0;

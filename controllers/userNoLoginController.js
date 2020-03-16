@@ -47,7 +47,6 @@ exports.addUserNoLogin = async (req,res,next) => {
         //  take the battlelog of the response and store all battles in database
         let getBattleLog = userAndBattlelog[1];
         
-
         getBattleLog.data.items.forEach( async (element, index) => {
 
             try {
@@ -71,7 +70,7 @@ exports.addUserNoLogin = async (req,res,next) => {
                     
                 }
                 else {
-                    console.log(`${index} battle is already in it`);
+                    console.log(`${index} battle is already in the database`);
                 }
                          
             } catch (e) {

@@ -43,11 +43,20 @@ renderer.domElement.style.top = 0;
 
 var geometry = new THREE.IcosahedronGeometry(7, 2);
 var edges = new THREE.EdgesGeometry( geometry );
-var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
-line.position.x = 0;
-line.position.y = 0;
-line.position.z = 0;
-scene.add( line );
+var lineEdge = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
+lineEdge.position.x = 0;
+lineEdge.position.y = 0;
+lineEdge.position.z = 0;
+scene.add( lineEdge );
+
+///// for test purpose on second path with second location
+var geometry2 = new THREE.IcosahedronGeometry(7, 2);
+var edges2 = new THREE.EdgesGeometry( geometry );
+var lineEdge2= new THREE.LineSegments( edges2, new THREE.LineBasicMaterial( { color: 0xaa039c } ) );
+lineEdge2.position.x = 200;
+lineEdge2.position.y = 0;
+lineEdge2.position.z = 0;
+scene.add( lineEdge2 );
 
 
 
@@ -120,7 +129,7 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
 
 
 ////// with that we set the path of the camera 
-let catMullArray = [
+let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 0, 0, 300 ), 
     new THREE.Vector3( 0, 10, 100 ),
@@ -128,25 +137,52 @@ let catMullArray = [
 ]
 
 for (let i = 0; i < 50; i++) {
-    catMullArray.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 12), 13 - 1.5 * i, 35 * Math.cos( 2 * Math.PI * i / 12)));
+    catMullArray1.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 12), 13 - 1.5 * i, 35 * Math.cos( 2 * Math.PI * i / 12)));
 }
-catMullArray. push(new THREE.Vector3(0,0, 200));
+catMullArray1. push(new THREE.Vector3(0,0, 200));
 // for (let i = 0; i < 33; i++) {
-//     catMullArray.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
+//     catMullArray1.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
 // }
-let sampleClosedSpline = new THREE.CatmullRomCurve3( catMullArray, true );
-sampleClosedSpline.curveType = "catmullrom";
-sampleClosedSpline.tension = 0.2;
+let sampleClosedSpline1 = new THREE.CatmullRomCurve3( catMullArray1, true );
+sampleClosedSpline1.curveType = "catmullrom";
+sampleClosedSpline1.tension = 0.2;
+
+////// create a second path for the camera with second catmullarray 
+let catMullArray2 = [
+    new THREE.Vector3( 0, 0, 400 ),
+    new THREE.Vector3( 30, 0, 300 ), 
+    new THREE.Vector3( 60, 0, 100 ),
+    new THREE.Vector3( 100, 0, 50 ),
+    new THREE.Vector3( 100, 0, -50 ),
+    new THREE.Vector3( 100, 0, -500 )
+]
+
+let sampleClosedSpline2 = new THREE.CatmullRomCurve3( catMullArray2, true );
+sampleClosedSpline2.curveType = "catmullrom";
+sampleClosedSpline2.tension = 0.2;
+
+//// initialize the path with first catMullArray
+//// we will change path value with the click event in the menu 
+
+let pathVal = sampleClosedSpline1;
+let indexPath = 1;
+
 
 let y_scroll_position = 0; 
 let camPosIndex = 0;
 
-function updateCamera(camPosIndex) {
-    let camPos = sampleClosedSpline.getPoint(camPosIndex / 2000);
+function updateCamera(camPosIndex, bla23, indexPath) {
+    let camPos = bla23.getPoint(camPosIndex / 2000);
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
-    camera.lookAt(0, camPos.y ,0);
+    if (indexPath === 1) {
+        camera.lookAt(0, camPos.y ,0);
+    }
+    else if (indexPath === 2) {
+        camera.lookAt(200, 0 ,0);
+    }
+    
 }
 //// bellow is the scroll function that will feed/define the 
 //// camposIndex of the updateCamera function inside the requestAnimationFrame Loop of animate function 
@@ -154,7 +190,7 @@ function updateCamera(camPosIndex) {
 window.addEventListener("scroll", scroll);
 function scroll () {
     // ev.preventDefault();
-    y_scroll_position = window.scrollY/6
+    y_scroll_position = window.scrollY/3
 }
 
 ////// array in which the models of characters are stored, 
@@ -188,10 +224,9 @@ function animate() {
 
     ///// this part is to create inertia with the scrolling
     ///// y_scroll_position is updated through scroll callback function 
-    camPosIndex = 0.96 * camPosIndex + 0.04 * y_scroll_position;
-    camPosIndex = Math.floor(camPosIndex * 100) /100;
-    updateCamera(camPosIndex); 
-
+    camPosIndex = 0.92 * camPosIndex + 0.08 * y_scroll_position;
+    camPosIndex = Math.floor(camPosIndex * 10000) /10000;
+    updateCamera(camPosIndex, pathVal, indexPath); 
 }
 animate();
 
@@ -243,13 +278,19 @@ document.getElementById("back").addEventListener("click", goback);
 document.getElementById("link1").addEventListener("click", goto);
 document.getElementById("link2").addEventListener("click", goto2);
 function goback () {
+    pathVal = sampleClosedSpline1;
+    indexPath = 1;
     window.scrollTo(0,0)
 }
 function goto () {
-    window.scrollTo(0,450)
+    pathVal = sampleClosedSpline1;
+    indexPath = 1;
+    window.scrollTo(0,400)
 }
 function goto2 () {
-    window.scrollTo(0,2500)
+    pathVal = sampleClosedSpline2;
+    indexPath = 2;
+    window.scrollTo(0,4000)
 }
 
 let burger = document.getElementById("burger");
