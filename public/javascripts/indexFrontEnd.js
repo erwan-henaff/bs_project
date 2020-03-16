@@ -204,7 +204,9 @@ let requestData = async (playerTag) => {
             url: url_final,
             data: {
                 playerTag: playerTag,
-                whichKey: "appkeyDCI"
+                // whichKey: "appkeyDCI"
+                whichKey: "appkeyHome"
+
             } 
         })  
         makePlayerContainer(playerInfo.data[0], meshModelTest);
@@ -269,4 +271,8 @@ function transform () {
     line22.classList.toggle("toggleline22");
     line32.classList.toggle("toggleline32");
     line42.classList.toggle("toggleline42");
+
+    //// make the menu comes from the right.
+    let menu = document.getElementById("menu");
+    menu.classList.toggle("toggleMenuPosition");
 }
