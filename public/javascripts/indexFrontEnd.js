@@ -150,16 +150,19 @@ let catMullArray2 = [
     new THREE.Vector3( 50, 0, 250 ), 
     new THREE.Vector3( 100, 0, 200 ),
     new THREE.Vector3( 200, 0, 175 ),
-    new THREE.Vector3( 200, 0, 100 )
+    new THREE.Vector3( 200, 0, 150 )
 
 ]
 
-for (let i = 0; i < 50; i++) {
-    catMullArray2.push(new THREE.Vector3( 200, - 50 * Math.sin(i * Math.PI / 25), 50 * Math.cos(i* Math.PI / 25)));
+for (let i = 0; i < 24; i++) {
+    catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
 }
-catMullArray2.push(new THREE.Vector3( 200,  0, -100));
-catMullArray2.push(new THREE.Vector3( 200,  0, -200));
-catMullArray2.push(new THREE.Vector3( 200,  0, -300))
+catMullArray2.push(new THREE.Vector3( 200,  -90, 1));
+catMullArray2.push(new THREE.Vector3( 200,  -150, 1));
+catMullArray2.push(new THREE.Vector3( 200,  -200, 1));
+catMullArray2.push(new THREE.Vector3( 200,  -250, 1));
+catMullArray2.push(new THREE.Vector3( 200,  -350, 1))
+
 
 
 
@@ -221,9 +224,6 @@ function animate() {
         
 
     })
-    // if (meshModelTest2) {
-    //     meshModelTest2.rotation.y+= 0.02
-    // }
 
     ///// this part is to create inertia with the scrolling
     ///// y_scroll_position is updated through scroll callback function 
@@ -295,7 +295,7 @@ function goto () {
 function goto2 () {
     pathVal = sampleClosedSpline2;
     indexPath = 2;
-    window.scrollTo(0,500)
+    window.scrollTo(0,700)
 }
 
 let burger = document.getElementById("burger");
