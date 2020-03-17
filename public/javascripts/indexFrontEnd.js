@@ -72,7 +72,6 @@ cont.appendChild( renderercss.domElement );
 // renderercss.domElement.appendChild(renderer.domElement);
 cont.appendChild(renderer.domElement);
 
-
 var loader = new THREE.FontLoader();
 let mesh3 = loader.load( '../assets/font.json', function ( font ) {
 	let geometry = new THREE.TextGeometry( 'BRAWL DATA', {
@@ -135,14 +134,11 @@ let catMullArray1 = [
     new THREE.Vector3( 0, 10, 100 ),
     new THREE.Vector3( 0, 15, 50 )
 ]
-
 for (let i = 0; i < 50; i++) {
     catMullArray1.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 12), 13 - 1.5 * i, 35 * Math.cos( 2 * Math.PI * i / 12)));
 }
 catMullArray1. push(new THREE.Vector3(0,0, 200));
-// for (let i = 0; i < 33; i++) {
-//     catMullArray1.push(new THREE.Vector3( 0, (10 - 20 * (i%2)), -960 + (i+1)*30 ))
-// }
+
 let sampleClosedSpline1 = new THREE.CatmullRomCurve3( catMullArray1, true );
 sampleClosedSpline1.curveType = "catmullrom";
 sampleClosedSpline1.tension = 0.2;
@@ -151,11 +147,21 @@ sampleClosedSpline1.tension = 0.2;
 let catMullArray2 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 30, 0, 300 ), 
-    new THREE.Vector3( 60, 0, 100 ),
-    new THREE.Vector3( 100, 0, 50 ),
-    new THREE.Vector3( 100, 0, -50 ),
-    new THREE.Vector3( 100, 0, -500 )
+    new THREE.Vector3( 50, 0, 250 ), 
+    new THREE.Vector3( 100, 0, 200 ),
+    new THREE.Vector3( 200, 0, 175 ),
+    new THREE.Vector3( 200, 0, 100 )
+
 ]
+
+for (let i = 0; i < 50; i++) {
+    catMullArray2.push(new THREE.Vector3( 200, - 50 * Math.sin(i * Math.PI / 25), 50 * Math.cos(i* Math.PI / 25)));
+}
+catMullArray2.push(new THREE.Vector3( 200,  0, -100));
+catMullArray2.push(new THREE.Vector3( 200,  0, -200));
+catMullArray2.push(new THREE.Vector3( 200,  0, -300))
+
+
 
 let sampleClosedSpline2 = new THREE.CatmullRomCurve3( catMullArray2, true );
 sampleClosedSpline2.curveType = "catmullrom";
@@ -163,10 +169,8 @@ sampleClosedSpline2.tension = 0.2;
 
 //// initialize the path with first catMullArray
 //// we will change path value with the click event in the menu 
-
 let pathVal = sampleClosedSpline1;
 let indexPath = 1;
-
 
 let y_scroll_position = 0; 
 let camPosIndex = 0;
@@ -189,7 +193,6 @@ function updateCamera(camPosIndex, bla23, indexPath) {
 
 window.addEventListener("scroll", scroll);
 function scroll () {
-    // ev.preventDefault();
     y_scroll_position = window.scrollY/3
 }
 
@@ -245,6 +248,8 @@ let requestData = async (playerTag) => {
             } 
         })  
         makePlayerContainer(playerInfo.data[0], meshModelTest);
+        console.log(playerInfo.data[1]);
+        makeBattleSection(playerInfo.data[1]);
     } catch (error) {
         console.log(error);
     }   
@@ -290,7 +295,7 @@ function goto () {
 function goto2 () {
     pathVal = sampleClosedSpline2;
     indexPath = 2;
-    window.scrollTo(0,4000)
+    window.scrollTo(0,500)
 }
 
 let burger = document.getElementById("burger");

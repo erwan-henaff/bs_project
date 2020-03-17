@@ -72,7 +72,6 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
 
 ////  meshModelTest = [] defined in indexFrontEnd file ;
 
-
 const makeBrawlerText = (data, distance, meshModelTest) => {
 
     let loader = new THREE.FontLoader();
@@ -181,7 +180,29 @@ Highest Trophies : ${data.highestTrophies}
         scene.add( lineCube );
         scene.add( cube );
     }
-        
+};
 
-} ;
+const makeBattleSection = (data) => {
+    for (let i = 0; i < data.length; i++) {
+        let divBattle = document.createElement('div');
+        divBattle.innerHTML = `
+${data[i].event.mode} ${data[i].event.map}
+${data[i].battle.result? data[i].battle.result : data[i].battle.rank }
+`;
+        divBattle.style.color = "rgb(255, 255, 150)";
+        divBattle.style.fontSize = "1px";
+        divBattle.style.padding = "1px";
+    
+
+        let cssObject = new THREE.CSS3DObject(divBattle);
+        cssObject.position.x = 200;
+        cssObject.position.y = - 15 * Math.sin(i * Math.PI / 25);
+        cssObject.position.z = 15 * Math.cos(i* Math.PI / 25); 
+        cssObject.rotation.x = 2 * i * Math.PI / 25
+    
+        sceneCSS.add(cssObject); 
+        
+    }
+    
+}
 
