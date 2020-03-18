@@ -53,9 +53,9 @@ scene.add( lineEdge );
 var geometry2 = new THREE.IcosahedronGeometry(7, 2);
 var edges2 = new THREE.EdgesGeometry( geometry );
 var lineEdge2= new THREE.LineSegments( edges2, new THREE.LineBasicMaterial( { color: 0xaa039c } ) );
-lineEdge2.position.x = 200;
+lineEdge2.position.x = 300;
 lineEdge2.position.y = 0;
-lineEdge2.position.z = 0;
+lineEdge2.position.z = -300;
 scene.add( lineEdge2 );
 
 
@@ -134,8 +134,8 @@ let catMullArray1 = [
     new THREE.Vector3( 0, 10, 100 ),
     new THREE.Vector3( 0, 15, 50 )
 ]
-for (let i = 0; i < 50; i++) {
-    catMullArray1.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 12), 13 - 1.5 * i, 35 * Math.cos( 2 * Math.PI * i / 12)));
+for (let i = 0; i < 200; i++) {
+    catMullArray1.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, 35 * Math.cos( 2 * Math.PI * i / 50)));
 }
 catMullArray1. push(new THREE.Vector3(0,0, 200));
 
@@ -146,29 +146,28 @@ sampleClosedSpline1.tension = 0.2;
 ////// create a second path for the camera with second catmullarray 
 let catMullArray2 = [
     new THREE.Vector3( 0, 0, 400 ),
-    new THREE.Vector3( 30, 0, 300 ), 
-    new THREE.Vector3( 50, 0, 250 ), 
-    new THREE.Vector3( 100, 0, 200 ),
-    new THREE.Vector3( 200, 0, 175 ),
-    new THREE.Vector3( 200, 0, 150 )
-
+    new THREE.Vector3( 50, 0, 350 ), 
+    new THREE.Vector3( 100, 0, 200 ), 
+    new THREE.Vector3( 200, 0, 0 ),
+    new THREE.Vector3( 300, 0, -50 ),
 ]
-
-for (let i = 0; i < 24; i++) {
-    catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
+for (let i = 0; i < 50; i++) {
+    catMullArray2.push(new THREE.Vector3( 300 + 200 * Math.sin( Math.PI * i / 25), 0, -300 + 200 * Math.cos( Math.PI * i / 25)));
 }
-catMullArray2.push(new THREE.Vector3( 200,  -90, 1));
-catMullArray2.push(new THREE.Vector3( 200,  -150, 1));
-catMullArray2.push(new THREE.Vector3( 200,  -200, 1));
-catMullArray2.push(new THREE.Vector3( 200,  -250, 1));
-catMullArray2.push(new THREE.Vector3( 200,  -350, 1))
+// for (let i = 0; i < 24; i++) {
+//     catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
+// }
+catMullArray2.push(new THREE.Vector3( 300,  0, -50));
+catMullArray2.push(new THREE.Vector3( 200,  0, 0));
+catMullArray2.push(new THREE.Vector3( 200,  0, ));
+catMullArray2.push(new THREE.Vector3( 50,  0, 350));
 
 
 
 
 let sampleClosedSpline2 = new THREE.CatmullRomCurve3( catMullArray2, true );
 sampleClosedSpline2.curveType = "catmullrom";
-sampleClosedSpline2.tension = 0.2;
+sampleClosedSpline2.tension = 0.5;
 
 //// initialize the path with first catMullArray
 //// we will change path value with the click event in the menu 
@@ -187,7 +186,7 @@ function updateCamera(camPosIndex, bla23, indexPath) {
         camera.lookAt(0, camPos.y ,0);
     }
     else if (indexPath === 2) {
-        camera.lookAt(200, 0 ,0);
+        camera.lookAt(300, 0 , -300);
     }
     
 }
@@ -247,6 +246,7 @@ let requestData = async (playerTag) => {
 
             } 
         })  
+        
         makePlayerContainer(playerInfo.data[0], meshModelTest);
         console.log(playerInfo.data[1]);
         makeBattleSection(playerInfo.data[1]);

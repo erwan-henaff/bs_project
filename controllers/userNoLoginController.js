@@ -30,7 +30,7 @@ exports.addUserNoLogin = async (req,res,next) => {
         
         //////////////////////////////////////////////////////////////////////////////////////////
         //////////// get the battlelog from API, it's an object with "items" key being an array
-
+        console.log("*****************nnnnnnnnnnnnnnnnnnnnnnnnnnn******")
         let userAndBattlelog = await Promise.all(
             arrayURL.map(async el => {
                 return await axios({

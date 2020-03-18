@@ -185,19 +185,27 @@ Highest Trophies : ${data.highestTrophies}
 const makeBattleSection = (data) => {
     for (let i = 0; i < data.length; i++) {
         let divBattle = document.createElement('div');
+        divBattle.classList.add("divBattleClass");
         let divBattleTeamPlayer = document.createElement('div');
+        divBattle.classList.add("divBattleTeamPlayerClass");
+
         if (data[i].battle.teams) {
-            divBattleTeamPlayer.innerHTML = `
-${data[i].battle.teams[0][0].name}, ${data[i].battle.teams[0][1].name}, ${data[i].battle.teams[0][1].name}
-${data[i].battle.teams[1][0].name}, ${data[i].battle.teams[1][1].name}, ${data[i].battle.teams[1][1].name}, boom
-`
+            data[i].battle.teams.forEach(el => el.forEach(el => {
+                divBattleTeamPlayer.innerHTML += `
+                <div class ="playerClass">${el.name}
+                    <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
+                </div>
+                `
+            }))
         }
         else if (data[i].battle.players) {
-            divBattleTeamPlayer.innerHTML = `
-${data[i].battle.players[0].name}, ${data[i].battle.players[1].name}, ${data[i].battle.players[2].name}, ${data[i].battle.players[3].name}, ${data[i].battle.players[4].name}
-${data[i].battle.players[5].name}, ${data[i].battle.players[6].name}, ${data[i].battle.players[7].name}, ${data[i].battle.players[8].name}, ${data[i].battle.players[9].name},
-boom
-`
+            data[i].battle.players.forEach(el=> {
+                divBattleTeamPlayer.innerHTML += `
+                    <div class ="playerClass">${el.name}
+                        <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
+                    </div>
+                    `
+            })
         }
         
         divBattleTeamPlayer.style.color = "rgb(0, 255, 255)";
@@ -207,9 +215,7 @@ boom
 ${data[i].event.mode} ${data[i].event.map}
 ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` }
 `;
-        divBattle.style.color = "rgb(255, 255, 150)";
-        divBattle.style.fontSize = "1px";
-        divBattle.style.padding = "1px";
+        
 
         divBattle.appendChild(divBattleTeamPlayer);
         
@@ -218,10 +224,10 @@ ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` 
         // divBattle.appendChild(testsubdiv)
 
         let cssObject = new THREE.CSS3DObject(divBattle);
-        cssObject.position.x = 200;
-        cssObject.position.y = - 50 * Math.sin(i * Math.PI / (25 * 2));
-        cssObject.position.z = 50 * Math.cos(i* Math.PI / (25 * 2)); 
-        cssObject.rotation.x = 2 * i * Math.PI / (25 * 4) 
+        cssObject.position.x = 300 + 150 * Math.sin(2 * 2 * i * Math.PI / 25) ;
+        cssObject.position.y = 0 ;
+        cssObject.position.z = -300 + 150 * Math.cos(2* 2 * i * Math.PI / 25 ); 
+        cssObject.rotation.y = 2 * 2 * i * Math.PI / 25 
     
         sceneCSS.add(cssObject); 
         
