@@ -204,8 +204,6 @@ const makeBattleSection = (data) => {
                 `
                 divBattleTeamPlayer.appendChild(divPlayer);
                 divPlayer.addEventListener("click", (event)=> {
-                        event.target.style.color = "red";
-                        console.log(event.target.id);
                         callPlayerInfo(event.target.id.slice(1));
                 })
             }))
@@ -220,8 +218,6 @@ const makeBattleSection = (data) => {
                 `
                 divBattleTeamPlayer.appendChild(divPlayer);
                 divPlayer.addEventListener("click", (event)=> {
-                        event.target.style.color = "red";
-                        console.log(event.target.id);
                         callPlayerInfo(event.target.id.slice(1));
                 })
             })
