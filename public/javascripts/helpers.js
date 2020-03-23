@@ -64,7 +64,7 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
     ///// handles the text for each brawlers 
 
     for (let i = 0; i < data.brawlers.length; i++) {
-        makeBrawlerText(data.brawlers[i], i, meshModelTest);
+        makeBrawlerSection(data.brawlers[i], i, meshModelTest);
         
     }
 
@@ -72,7 +72,7 @@ Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawle
 
 ////  meshModelTest = [] defined in indexFrontEnd file ;
 
-const makeBrawlerText = (data, distance, meshModelTest) => {
+const makeBrawlerSection = (data, distance, meshModelTest) => {
 
     let loader = new THREE.FontLoader();
 
@@ -102,8 +102,8 @@ Highest Trophies : ${data.highestTrophies}
         // mesh2.position.z = -40 - distance * 30;
 
         mesh2.position.y = 10 - 1.5 * (distance) ;
-        mesh2.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
-        mesh2.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        mesh2.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+        mesh2.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
         mesh2.rotation.y = distance * Math.PI / 6;
 
 
@@ -124,8 +124,8 @@ Highest Trophies : ${data.highestTrophies}
             // meshModelTest = meshTest;
             meshCharacter.scale.set(0.005,0.005,0.005);
             meshCharacter.position.y =  13 - 1.5 * (distance);
-            meshCharacter.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
-            meshCharacter.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+            meshCharacter.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+            meshCharacter.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
             meshCharacter.rotation.y = distance * Math.PI / 6;
             
             meshModelTest.push(meshCharacter);
@@ -139,8 +139,8 @@ Highest Trophies : ${data.highestTrophies}
         _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltfShelly) {
             gltfShelly.scene.children[0].scale.set(0.005,0.005,0.005);
             gltfShelly.scene.children[0].position.y = 13 - 1.5 * (distance);
-            gltfShelly.scene.children[0].position.z = 20 * Math.cos( 2 * Math.PI * distance / 12);
-            gltfShelly.scene.children[0].position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+            gltfShelly.scene.children[0].position.z = -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+            gltfShelly.scene.children[0].position.x =  -300+ 20 * Math.sin( 2 * Math.PI * distance / 12);
             gltfShelly.scene.children[0].rotation.y = distance * Math.PI / 6;
             meshModelTest.push(gltfShelly.scene.children[0]);
 
@@ -168,13 +168,13 @@ Highest Trophies : ${data.highestTrophies}
         ////// + 6.5 is to get the cube above the text, -4 to get the cube and text lower for the camera.
         ////// 10 - 20 * distance%2 is there to create a zig zag pattern
         lineCube.position.y = 6.5 + 10 - 1.5  * (distance);
-        lineCube.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
-        lineCube.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        lineCube.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+        lineCube.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
         lineCube.rotation.y =  distance * Math.PI / 6;
 
         cube.position.y = 6.5 + 10 - 1.5 * (distance);
-        cube.position.z =  20 * Math.cos( 2 * Math.PI * distance / 12);
-        cube.position.x =  20 * Math.sin( 2 * Math.PI * distance / 12);
+        cube.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+        cube.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
         cube.rotation.y = distance * Math.PI / 6;
 
         scene.add( lineCube );

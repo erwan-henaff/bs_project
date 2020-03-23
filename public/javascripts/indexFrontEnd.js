@@ -44,9 +44,9 @@ renderer.domElement.style.top = 0;
 var geometry = new THREE.IcosahedronGeometry(7, 2);
 var edges = new THREE.EdgesGeometry( geometry );
 var lineEdge = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
-lineEdge.position.x = 0;
+lineEdge.position.x = -300;
 lineEdge.position.y = 0;
-lineEdge.position.z = 0;
+lineEdge.position.z = -300;
 scene.add( lineEdge );
 
 ///// for test purpose on second path with second location
@@ -131,11 +131,12 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
 let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 0, 0, 300 ), 
-    new THREE.Vector3( 0, 10, 100 ),
-    new THREE.Vector3( 0, 15, 50 )
+    new THREE.Vector3( -100, 10, 0 ),
+    new THREE.Vector3( -200, 15, -100 ),
+    new THREE.Vector3( -300, 15, -200 )
 ]
 for (let i = 0; i < 200; i++) {
-    catMullArray1.push(new THREE.Vector3( 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, 35 * Math.cos( 2 * Math.PI * i / 50)));
+    catMullArray1.push(new THREE.Vector3( -300 + 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, -300 + 35 * Math.cos( 2 * Math.PI * i / 50)));
 }
 catMullArray1. push(new THREE.Vector3(0,0, 200));
 
@@ -182,8 +183,11 @@ function updateCamera(camPosIndex, bla23, indexPath) {
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
-    if (indexPath === 1) {
+    if (indexPath === 1 && camPos.z > 200) {
         camera.lookAt(0, camPos.y ,0);
+    }
+    if (indexPath === 1 && camPos.z <= 200) {
+        camera.lookAt(-300, camPos.y , -300);
     }
     else if (indexPath === 2) {
         camera.lookAt(300, 0 , -300);
