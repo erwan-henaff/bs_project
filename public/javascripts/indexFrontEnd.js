@@ -36,7 +36,7 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 let cont = document.getElementById('mainCont');
 // cont.appendChild( renderer.domElement );
-renderer.domElement.style.zIndex = 0;
+renderer.domElement.style.zIndex = 10;
 renderer.domElement.style.position = 'absolute';
 renderer.domElement.style.top = 0;
 
@@ -65,7 +65,7 @@ renderercss = new THREE.CSS3DRenderer();
 renderercss.setSize(window.innerWidth, window.innerHeight);
 renderercss.domElement.style.position = 'absolute';
 renderercss.domElement.style.top = 0;
-renderercss.domElement.style.zIndex = 100;
+renderercss.domElement.style.zIndex = 11;
 cont.appendChild( renderercss.domElement );
 ////// put the normal renderer inside the renderecss dom elemet as child. 
 ////// beware zIndex
@@ -130,7 +130,7 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
 ////// with that we set the path of the camera 
 let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
-    new THREE.Vector3( 0, 0, 300 ), 
+    new THREE.Vector3( 0, 0, 200 ), 
     new THREE.Vector3( -100, 10, 0 ),
     new THREE.Vector3( -200, 15, -100 ),
     new THREE.Vector3( -300, 15, -200 )
@@ -138,11 +138,16 @@ let catMullArray1 = [
 for (let i = 0; i < 200; i++) {
     catMullArray1.push(new THREE.Vector3( -300 + 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, -300 + 35 * Math.cos( 2 * Math.PI * i / 50)));
 }
+catMullArray1. push(new THREE.Vector3( -200, 15, -100 )); 
+catMullArray1. push(new THREE.Vector3(-100, 10, 0));
 catMullArray1. push(new THREE.Vector3(0,0, 200));
+catMullArray1. push(new THREE.Vector3(0,0, 400));
+
+
 
 let sampleClosedSpline1 = new THREE.CatmullRomCurve3( catMullArray1, true );
 sampleClosedSpline1.curveType = "catmullrom";
-sampleClosedSpline1.tension = 0.2;
+sampleClosedSpline1.tension = 0.5;
 
 ////// create a second path for the camera with second catmullarray 
 let catMullArray2 = [
@@ -180,17 +185,25 @@ let camPosIndex = 0;
 
 function updateCamera(camPosIndex, bla23, indexPath) {
     let camPos = bla23.getPoint(camPosIndex / 2000);
+
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
     if (indexPath === 1 && camPos.z > 200) {
         camera.lookAt(0, camPos.y ,0);
+        renderercss.domElement.style.zIndex = 11;
     }
-    if (indexPath === 1 && camPos.z <= 200) {
+    if (indexPath === 1 && camPos.z <= 200 && camPos.z >100) {
+        camera.lookAt(-150, camPos.y , -300);
+        renderercss.domElement.style.zIndex = 9;
+    }
+    if (indexPath === 1 && camPos.z <= 100) {
         camera.lookAt(-300, camPos.y , -300);
+        renderercss.domElement.style.zIndex = 9;
     }
     else if (indexPath === 2) {
         camera.lookAt(300, 0 , -300);
+        renderercss.domElement.style.zIndex = 11;
     }
     
 }
@@ -277,8 +290,24 @@ submit_button.addEventListener("click",()=>{
   // request_image(date1);
 })
 
+let callPlayerInfo = (tag) => {
+    console.log(playerTag);
+
+    /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
+    while(scene.children.length > 8){ 
+            scene.remove(scene.children[8]); 
+    }
+    while(sceneCSS.children.length > 0){ 
+        sceneCSS.remove(sceneCSS.children[0]); 
+    }
+    requestData(tag);
+    goback();
+}
+
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
+    indexPath = 1;
+
 }
 
 

@@ -156,12 +156,12 @@ Highest Trophies : ${data.highestTrophies}
 
         let materialProj2 = 
         [
-            null, 
-            null, 
-            null,
-            null, 
+            new THREE.MeshBasicMaterial({ color: 0x00039c, opacity: 0.5, transparent: true }), 
+            new THREE.MeshBasicMaterial({ color: 0x00039c, opacity: 0.5, transparent: true }), 
+            new THREE.MeshBasicMaterial({ color: 0x00039c, opacity: 0.5, transparent: true }),
+            new THREE.MeshBasicMaterial({ color: 0x00039c, opacity: 0.5, transparent: true }), 
             new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load(`../assets/brawler-models/${data.id}.png`)}), // FRONT SIDE
-            null 
+            new THREE.MeshBasicMaterial({ color: 0x00039c, opacity: 0.5, transparent: true }) 
         ];
         ////// use the 6th dimension material and project the texture on the front side of the cube 5th value of the material array
         let cube = new THREE.Mesh(geometryCube, materialProj2);
@@ -177,7 +177,7 @@ Highest Trophies : ${data.highestTrophies}
         cube.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
         cube.rotation.y = distance * Math.PI / 6;
 
-        scene.add( lineCube );
+        // scene.add( lineCube );
         scene.add( cube );
     }
 };
@@ -188,33 +188,67 @@ const makeBattleSection = (data) => {
         divBattle.classList.add("divBattleClass");
         let divBattleTeamPlayer = document.createElement('div');
         divBattle.classList.add("divBattleTeamPlayerClass");
+        
+        // divBattleTeamPlayer.addEventListener("click", (event)=> {
+        //     event.target.style.color = "red";
+        //     console.log("tryyy");
+        // })
 
         if (data[i].battle.teams) {
             data[i].battle.teams.forEach(el => el.forEach(el => {
-                divBattleTeamPlayer.innerHTML += `
-                <div class ="playerClass">${el.name}
+                let divPlayer = document.createElement('div');
+                divPlayer.setAttribute("id", el.tag )
+                divPlayer.innerHTML += `
+                    ${el.name}
                     <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
-                </div>
                 `
+                divBattleTeamPlayer.appendChild(divPlayer);
+                divPlayer.addEventListener("click", (event)=> {
+                        event.target.style.color = "red";
+                        console.log(event.target.id);
+                        callPlayerInfo(event.target.id.slice(1));
+                })
             }))
         }
         else if (data[i].battle.players) {
             data[i].battle.players.forEach(el=> {
-                divBattleTeamPlayer.innerHTML += `
-                    <div class ="playerClass">${el.name}
-                        <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
-                    </div>
-                    `
+                let divPlayer = document.createElement('div');
+                divPlayer.setAttribute("id", el.tag )
+                divPlayer.innerHTML += `
+                    ${el.name}
+                    <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
+                `
+                divBattleTeamPlayer.appendChild(divPlayer);
+                divPlayer.addEventListener("click", (event)=> {
+                        event.target.style.color = "red";
+                        console.log(event.target.id);
+                        callPlayerInfo(event.target.id.slice(1));
+                })
             })
         }
-        
+
+
+        ////// add event listener to call data from selected player 
+        // let arrPlayerClass = document.getElementsByClassName("divBattleTeamPlayerClass");
+        // // console.log (arrPlayerClass);
+        // for (let i = 0; i < arrPlayerClass.length; i++) {
+        //     arrPlayerClass[i].firstChild.addEventListener("click", (event)=> {
+        //         event.target.style.color = "red";
+        //         console.log("tryyy");
+        //     })
+        // }
+
         divBattleTeamPlayer.style.color = "rgb(0, 255, 255)";
 
 
         divBattle.innerHTML = `
-${data[i].event.mode} ${data[i].event.map}
-${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` }
-`;
+            ${data[i].event.mode} ${data[i].event.map}
+            ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` }
+        `;
+        divBattle.style.fontSize = 10;
+        divBattle.style.color = "yellow";
+
+
         
 
         divBattle.appendChild(divBattleTeamPlayer);
@@ -229,9 +263,9 @@ ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` 
         cssObject.position.z = -300 + 150 * Math.cos(2* 2 * i * Math.PI / 25 ); 
         cssObject.rotation.y = 2 * 2 * i * Math.PI / 25 
     
-        sceneCSS.add(cssObject); 
-        
+        sceneCSS.add(cssObject);    
     }
-    
 }
+
+
 
