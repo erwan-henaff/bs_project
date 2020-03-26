@@ -186,31 +186,42 @@ const makeBattleSection = (data) => {
     for (let i = 0; i < data.length; i++) {
         let divBattle = document.createElement('div');
         divBattle.classList.add("divBattleClass");
-        let divBattleTeamPlayer = document.createElement('div');
-        divBattle.classList.add("divBattleTeamPlayerClass");
         
-        // divBattleTeamPlayer.addEventListener("click", (event)=> {
-        //     event.target.style.color = "red";
-        //     console.log("tryyy");
-        // })
-
+        divBattle.innerHTML = `
+        ${data[i].event.mode} <br> ${data[i].event.map}
+        ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}`}`;
+        
+        
         if (data[i].battle.teams) {
-            data[i].battle.teams.forEach(el => el.forEach(el => {
-                let divPlayer = document.createElement('div');
-                divPlayer.setAttribute("id", el.tag )
-                divPlayer.innerHTML += `
-                    ${el.name}
-                    <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
-                `
-                divBattleTeamPlayer.appendChild(divPlayer);
-                divPlayer.addEventListener("click", (event)=> {
-                        callPlayerInfo(event.target.id.slice(1));
-                })
-            }))
+            data[i].battle.teams.forEach(el => {
+                let divBattleTeamPlayer = document.createElement('div');
+                divBattleTeamPlayer.classList.add("divBattleTeamPlayerClass");
+
+                el.forEach(el => {
+                
+                    let divPlayer = document.createElement('div');
+                    divPlayer.classList.add("playerClass");
+    
+                    divPlayer.setAttribute("id", el.tag )
+                    divPlayer.innerHTML += `
+                        ${el.name}
+                        <br>brawler:${el.brawler.name}, trophies:${el.brawler.trophies}, power: ${el.brawler.power}
+                    `
+                    divBattleTeamPlayer.appendChild(divPlayer);
+                    divPlayer.addEventListener("click", (event)=> {
+                            callPlayerInfo(event.target.id.slice(1));
+                    });
+                });
+                divBattle.appendChild(divBattleTeamPlayer);
+            })
         }
         else if (data[i].battle.players) {
+            let divBattleTeamPlayer = document.createElement('div');
+            divBattleTeamPlayer.classList.add("divBattleTeamPlayerClass");
             data[i].battle.players.forEach(el=> {
                 let divPlayer = document.createElement('div');
+                divPlayer.classList.add("playerClass");
+
                 divPlayer.setAttribute("id", el.tag )
                 divPlayer.innerHTML += `
                     ${el.name}
@@ -221,43 +232,14 @@ const makeBattleSection = (data) => {
                         callPlayerInfo(event.target.id.slice(1));
                 })
             })
+            divBattle.appendChild(divBattleTeamPlayer);
         }
 
-
-        ////// add event listener to call data from selected player 
-        // let arrPlayerClass = document.getElementsByClassName("divBattleTeamPlayerClass");
-        // // console.log (arrPlayerClass);
-        // for (let i = 0; i < arrPlayerClass.length; i++) {
-        //     arrPlayerClass[i].firstChild.addEventListener("click", (event)=> {
-        //         event.target.style.color = "red";
-        //         console.log("tryyy");
-        //     })
-        // }
-
-        divBattleTeamPlayer.style.color = "rgb(0, 255, 255)";
-
-
-        divBattle.innerHTML = `
-            ${data[i].event.mode} ${data[i].event.map}
-            ${data[i].battle.result? data[i].battle.result : `rank: ${data[i].battle.rank}` }
-        `;
-        divBattle.style.fontSize = 10;
-        divBattle.style.color = "yellow";
-
-
-        
-
-        divBattle.appendChild(divBattleTeamPlayer);
-        
-        // let testsubdiv = document.createElement('div');
-        // testsubdiv.innerHTML = "blaaaa"
-        // divBattle.appendChild(testsubdiv)
-
         let cssObject = new THREE.CSS3DObject(divBattle);
-        cssObject.position.x = 300 + 150 * Math.sin(2 * 2 * i * Math.PI / 25) ;
+        cssObject.position.x = 300 + 150 * Math.sin( 2 * i * Math.PI / 25) ;
         cssObject.position.y = 0 ;
-        cssObject.position.z = -300 + 150 * Math.cos(2* 2 * i * Math.PI / 25 ); 
-        cssObject.rotation.y = 2 * 2 * i * Math.PI / 25 
+        cssObject.position.z = -300 + 150 * Math.cos( 2 * i * Math.PI / 25); 
+        cssObject.rotation.y = 2 * i * Math.PI / 25
     
         sceneCSS.add(cssObject);    
     }

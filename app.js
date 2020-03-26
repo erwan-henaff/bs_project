@@ -11,6 +11,8 @@ const usersRouter = require('./routes/users');
 const battlesRouter = require('./routes/battles');
 const battlesHighRankRouter = require('./routes/battlesHighRank');
 const userNoLoginRouter = require('./routes/usernologin')
+const userNoLoginOfflineRouter = require('./routes/usernologinoffline')
+
 
 const battleTestRouter = require('./routes/battletest');
 
@@ -50,9 +52,9 @@ app.use('/users', usersRouter);
 app.use('/battles', battlesRouter);
 app.use('/battletest', battleTestRouter);
 app.use('/usernologin', userNoLoginRouter);
+app.use('/usernologinoffline', userNoLoginOfflineRouter);
 
 app.use('/battlesHighRank', battlesHighRankRouter);
-
 
 app.use('/cleandata', cleanDataRouter);
 

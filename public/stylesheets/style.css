@@ -149,11 +149,11 @@ header div {
   position: fixed;
   padding-top: 50px;
   top: 0px;
-  width: 50%;
+  width: 40%;
   height: 100vh;
   z-index: 1000;
   transition: 1s;
-  background-color: rgba(100, 149, 237, 0.7);
+  background-color: rgba(100, 148, 237, 0.199);
 }
 #menu div {
   padding: 5px;
@@ -172,21 +172,26 @@ header div {
 
 .divBattleClass {
   border : 1px solid rgba(0, 195, 255, 0.192);
-  background-color: rgba(214, 214, 214, 0.116);
-  width : 30px;
-  height: 60px;
-  font-size: 1px;
+  background-color: rgba(179, 179, 179, 0.116);
+  width : 32px;
+  height: 85px;
+  color: aqua;
+  font-size: 3px;
+
 }
 .divBattleTeamPlayerClass {
   display: flex;
   flex-direction: column;
-  padding: 1px;
+  justify-content: space-between;
+  background-color: rgba(0, 156, 96, 0.555);
+  margin-top: 1px;
+
 }
 
 .playerClass {
-  background-color: rgba(157, 219, 240, 0.356);
-  color: black;
-  padding: 1px;
+  color: rgb(0, 2, 121);
+  font-size: 2px;
+  padding-top: 1px;
 
 }
 

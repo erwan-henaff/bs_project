@@ -131,8 +131,9 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
 let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 0, 0, 200 ), 
-    new THREE.Vector3( -100, 10, 0 ),
-    new THREE.Vector3( -200, 15, -100 ),
+    new THREE.Vector3( -150, 10, 1 ),
+    new THREE.Vector3( -300, 15, 1 ),
+    new THREE.Vector3( -300, 15, -100 ),
     new THREE.Vector3( -300, 15, -200 )
 ]
 for (let i = 0; i < 200; i++) {
@@ -154,11 +155,12 @@ let catMullArray2 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 50, 0, 350 ), 
     new THREE.Vector3( 100, 0, 200 ), 
-    new THREE.Vector3( 200, 0, 0 ),
-    new THREE.Vector3( 300, 0, -50 ),
+    new THREE.Vector3( 200, 0, 50 ),
+    new THREE.Vector3( 300, 0, 0 ),
+    new THREE.Vector3( 300, 0, -20 )
 ]
 for (let i = 0; i < 50; i++) {
-    catMullArray2.push(new THREE.Vector3( 300 + 200 * Math.sin( Math.PI * i / 25), 0, -300 + 200 * Math.cos( Math.PI * i / 25)));
+    catMullArray2.push(new THREE.Vector3( 300 + 210 * Math.sin( Math.PI * i / 25), 0, -300 + 210 * Math.cos( Math.PI * i / 25)));
 }
 // for (let i = 0; i < 24; i++) {
 //     catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
@@ -183,21 +185,22 @@ let indexPath = 1;
 let y_scroll_position = 0; 
 let camPosIndex = 0;
 
-function updateCamera(camPosIndex, bla23, indexPath) {
-    let camPos = bla23.getPoint(camPosIndex / 2000);
+function updateCamera(camPosIndex, path, indexPath) {
+    let camPos = path.getPoint(camPosIndex / 2000);
+    let camLookAt = path.getPoint((camPosIndex + 10)/2000)
 
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
     if (indexPath === 1 && camPos.z > 200) {
-        camera.lookAt(0, camPos.y ,0);
+        camera.lookAt(camLookAt.x, camPos.y ,camLookAt.z);
         renderercss.domElement.style.zIndex = 11;
     }
-    if (indexPath === 1 && camPos.z <= 200 && camPos.z >100) {
-        camera.lookAt(-150, camPos.y , -300);
+    if (indexPath === 1 && camPos.z <= 200 && camPos.z > -150) {
+        camera.lookAt(camLookAt.x, camPos.y , camLookAt.z);
         renderercss.domElement.style.zIndex = 9;
     }
-    if (indexPath === 1 && camPos.z <= 100) {
+    if (indexPath === 1 && camPos.z <= - 150) {
         camera.lookAt(-300, camPos.y , -300);
         renderercss.domElement.style.zIndex = 9;
     }
@@ -244,7 +247,7 @@ function animate() {
     ///// this part is to create inertia with the scrolling
     ///// y_scroll_position is updated through scroll callback function 
     camPosIndex = 0.92 * camPosIndex + 0.08 * y_scroll_position;
-    camPosIndex = Math.floor(camPosIndex * 10000) /10000;
+    camPosIndex = Math.floor(camPosIndex * 1000) /1000;
     updateCamera(camPosIndex, pathVal, indexPath); 
 }
 animate();
@@ -307,7 +310,6 @@ let callPlayerInfo = (tag) => {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
     indexPath = 1;
-
 }
 
 
@@ -323,12 +325,12 @@ function goback () {
 function goto () {
     pathVal = sampleClosedSpline1;
     indexPath = 1;
-    window.scrollTo(0,400)
+    window.scrollTo(0,250)
 }
 function goto2 () {
     pathVal = sampleClosedSpline2;
     indexPath = 2;
-    window.scrollTo(0,700)
+    window.scrollTo(0,550)
 }
 
 let burger = document.getElementById("burger");
