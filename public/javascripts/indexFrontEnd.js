@@ -155,12 +155,12 @@ let catMullArray2 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 50, 0, 350 ), 
     new THREE.Vector3( 100, 0, 200 ), 
-    new THREE.Vector3( 200, 0, 50 ),
-    new THREE.Vector3( 300, 0, 0 ),
-    new THREE.Vector3( 300, 0, -20 )
+    new THREE.Vector3( 200, -20, 50 ),
+    new THREE.Vector3( 300, -20, 0 ),
+    new THREE.Vector3( 300, -20, -20 )
 ]
 for (let i = 0; i < 50; i++) {
-    catMullArray2.push(new THREE.Vector3( 300 + 210 * Math.sin( Math.PI * i / 25), 0, -300 + 210 * Math.cos( Math.PI * i / 25)));
+    catMullArray2.push(new THREE.Vector3( 300 + 210 * Math.sin( Math.PI * i / 25), -20, -300 + 210 * Math.cos( Math.PI * i / 25)));
 }
 // for (let i = 0; i < 24; i++) {
 //     catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
@@ -205,7 +205,7 @@ function updateCamera(camPosIndex, path, indexPath) {
         renderercss.domElement.style.zIndex = 9;
     }
     else if (indexPath === 2) {
-        camera.lookAt(300, 0 , -300);
+        camera.lookAt(300, 30 , -300);
         renderercss.domElement.style.zIndex = 11;
     }
     
@@ -319,6 +319,8 @@ window.onbeforeunload = function () {
 document.getElementById("back").addEventListener("click", goback);
 document.getElementById("link1").addEventListener("click", goto);
 document.getElementById("link2").addEventListener("click", goto2);
+document.getElementById("link4").addEventListener("click", transform);
+
 function goback () {
     pathVal = sampleClosedSpline1;
     indexPath = 1;

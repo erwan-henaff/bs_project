@@ -149,11 +149,11 @@ header div {
   position: fixed;
   padding-top: 50px;
   top: 0px;
-  width: 40%;
+  width: 100%;
   height: 100vh;
   z-index: 1000;
   transition: 1s;
-  background-color: rgba(100, 148, 237, 0.199);
+  background-color: rgba(85, 107, 148, 0.877);
 }
 #menu div {
   padding: 5px;
@@ -163,7 +163,7 @@ header div {
   transform:translate(100vw,0)
 }
 .toggleMenuPosition {
-  transform:translate(50vw,0)
+  transform:translate(0,0)
 }
 
 #link1  {
@@ -172,9 +172,9 @@ header div {
 
 .divBattleClass {
   border : 1px solid rgba(0, 195, 255, 0.192);
-  background-color: rgba(179, 179, 179, 0.116);
+  background-color: rgba(179, 179, 179, 0.432);
   width : 32px;
-  height: 85px;
+  /* height: 85px; */
   color: aqua;
   font-size: 3px;
 
@@ -183,13 +183,13 @@ header div {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: rgba(0, 156, 96, 0.555);
+  background-color: rgba(0, 190, 117, 0.938);
   margin-top: 1px;
 
 }
 
 .playerClass {
-  color: rgb(0, 2, 121);
+  color: rgb(0, 2, 94);
   font-size: 2px;
   padding-top: 1px;
 
