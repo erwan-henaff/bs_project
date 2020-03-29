@@ -106,6 +106,7 @@ exports.addCronJobs = async (req,res,next) => {
         var decoded = jwt.verify(req.body.token, jwt_key);
         let checkUser = await UserLogin.findOne({email:decoded.email}); 
         checkUser.cronJobs = req.body.cronJobs;
+        checkUser.tag = req.body.tag;
         await checkUser.save();
         const token = jwt.sign(
             {

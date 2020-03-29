@@ -18,7 +18,10 @@ const UserLoginSchema = new Schema ({
         enum: ['Admin', 'User'],
         default: 'User'
     },
-    tag : String,
+    tag : {
+        type: String,
+        default:''
+    },
     cronJobs : [Number],
     date : {
         type: Date,
