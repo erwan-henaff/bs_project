@@ -17,13 +17,13 @@ exports.task003 = async () => {
                 return addUserDataCron(element.tag)
             }
             for (let i = 0; i < element.cronJobs.length; i++) {
-                taskArray.push( new CronJob(`* * ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
+                taskArray.push( new CronJob(`0 0 ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
             }
             
         });
         for (let i = 0; i < taskArray.length; i++) {
             taskArray[i].start();      
-            
+            console.log(taskArray[i])
         }
     } catch (e) {
         next(e)
