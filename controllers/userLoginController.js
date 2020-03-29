@@ -94,9 +94,34 @@ exports.userLogin = async (req,res,next) => {
                     })
                 }
             });
-        }
+        }  
+    } catch (e) {
+        next(e);
+    } 
+};
+
+exports.addCronJobs = async (req,res,next) => {
+    try {
+        /// check webtoken and then save cronjobs time
+        var decoded = jwt.verify(req.body.token, jwt_key);
+        let checkUser = await UserLogin.findOne({email:decoded.email}); 
+        checkUser.cronJobs = req.body.cronJobs;
+        await checkUser.save();
+        const token = jwt.sign(
+            {
+              email: checkUser.email
+            },
+            jwt_key,
+            {
+                expiresIn: "1h"
+            }
+        );
+        return res.status(200).json({
+            message: "time saved",
+            token: token
+        });
         
-        
+    
     } catch (e) {
         next(e);
     } 
