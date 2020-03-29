@@ -9,15 +9,15 @@ const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const battlesRouter = require('./routes/battles');
-const battlesHighRankRouter = require('./routes/battlesHighRank');
 const userNoLoginRouter = require('./routes/usernologin');
 const userNoLoginOfflineRouter = require('./routes/usernologinoffline');
 const userLoginRouter = require('./routes/userlogin');
 
 
-const battleTestRouter = require('./routes/battletest');
-
-const cleanDataRouter = require('./routes/cleanData');
+///////////////////////////   cronjob stat 
+const {task001, task002} = require('./stat/stat');
+task001.start();
+task002("hello erwan").start();
 
 
 var app = express();
@@ -30,18 +30,11 @@ app.use(logger('dev'));
 
 
 ////////////////// connect to database 
-
 mongoose.connect('mongodb://localhost:27017/bs_project', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology:true
 });
-
-
-
-
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -51,15 +44,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/battles', battlesRouter);
-app.use('/battletest', battleTestRouter);
 app.use('/usernologin', userNoLoginRouter);
 app.use('/usernologinoffline', userNoLoginOfflineRouter);
 app.use('/userlogin', userLoginRouter);
-
-
-app.use('/battlesHighRank', battlesHighRankRouter);
-
-app.use('/cleandata', cleanDataRouter);
 
 
 // catch 404 and forward to error handler

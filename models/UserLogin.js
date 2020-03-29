@@ -18,11 +18,7 @@ const UserLoginSchema = new Schema ({
         default: 'User'
     },
     tag : String,
-    cronJobs : [
-        {
-            type : Number
-        }
-    ],
+    cronJobs : [Number],
     date : {
         type: Date,
         default: Date.now

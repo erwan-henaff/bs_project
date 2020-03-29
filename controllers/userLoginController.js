@@ -33,7 +33,8 @@ exports.userLogin = async (req,res,next) => {
                     console.log(hash);
                     const userLogin = new UserLogin({
                         email : req.body.email,
-                        password: hash
+                        password: hash,
+                        cronJobs: req.body.cronJobs
                     })
                     await userLogin.save(); 
                     res.status(200).send(userLogin.email)
