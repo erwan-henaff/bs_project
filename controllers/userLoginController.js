@@ -1,16 +1,14 @@
-const createError = require('http-errors');
-
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+let key = require('../env/key');
+let jwt_key = key.jwt_key;
+
 
 const UserLogin = require('../models/UserLogin');
 
-// let key = require('../env/key');
-// let appkeyDCI = key.appkeyDCI;
-// let appkeyHome = key.appkeyHome;
 
 
-exports.userLogin = async (req,res,next) => {
-
+exports.userSignup = async (req,res,next) => {
     try {
 
         let checkUserExist = await UserLogin.findOne({email:req.body.email}); 
@@ -33,13 +31,69 @@ exports.userLogin = async (req,res,next) => {
                     console.log(hash);
                     const userLogin = new UserLogin({
                         email : req.body.email,
-                        password: hash,
-                        cronJobs: req.body.cronJobs
+                        password: hash
                     })
-                    await userLogin.save(); 
-                    res.status(200).send(userLogin.email)
+                    try {
+                        await userLogin.save(); 
+                        res.status(200).send(userLogin.email)
+                    }
+                    catch (err) {
+                        res.status(401).json({
+                            error: err.errors
+                        })
+                    }
+                    
                 }
             })
+        }
+        
+        
+    } catch (err) {
+        next(err);
+    } 
+};
+
+
+exports.userLogin = async (req,res,next) => {
+    try {
+
+        let checkUserExist = await UserLogin.findOne({email:req.body.email}); 
+
+        if (!checkUserExist) {
+            return res.status(401).json({
+                message: "authorization failed"
+            })
+        }
+        else {
+            bcrypt.compare(req.body.password, checkUserExist.password, function(err, result) {
+                if (err){
+                    return res.status(401).json({
+                        message: "authorization failed"
+                    })
+                }
+                if (result){
+                  // Send JWT
+                  const token = jwt.sign(
+                    {
+                      email: checkUserExist.email
+                    },
+                    jwt_key,
+                    {
+                        expiresIn: "1h"
+                    }
+                  );
+                  return res.status(200).json({
+                    message: "Auth successful",
+                    email: checkUserExist.email,
+                    token: token
+                  });
+
+                } else {
+                    return res.status(401).json({
+                        message: "authorization failed"
+                    })
+                }
+            });
         }
         
         

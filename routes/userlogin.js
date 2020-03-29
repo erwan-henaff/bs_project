@@ -1,13 +1,15 @@
 var express = require('express');
 var router = express.Router();
 
-const { userLogin } = require ('../controllers/userLoginController');
-
+const { userSignup, userLogin } = require ('../controllers/userLoginController');
 
 
 router.route('/signup')
-    .post(userLogin)
+    .post(userSignup)
     // .get(getBattles);
+
+router.route('/login')
+    .post(userLogin)
 
 
 
