@@ -2,6 +2,9 @@ const axios = require('axios');
 const BattleHighRank = require('../models/BattlesHighRank');
 const UserLogin = require('../models/UserLogin');
 
+const CronJob = require('cron').CronJob;
+
+
 let key = require('../env/key');
 let appkeyDCI = key.appkeyDCI;
 let appkeyHome = key.appkeyHome;
@@ -101,22 +104,10 @@ exports.addBattlesHighRank = async () => {
     }
 };
 
-exports.getCronTimeUser = async () => {
-    try {
-        const usersTime = await UserLogin.find()
-            .select('cronJobs tag -_id');
-            
-        let newUsersTime = usersTime.filter(function (value) {
-            return ((value.cronJobs.length >= 1) && (value.tag))
-        })
-        return newUsersTime;
 
-      } catch (e) {
-        next(e);
-      }
-}
 
-exports.addUserDataCron = async (playerTag) => {
+
+let addUserDataCron = async (playerTag) => {
 
     try {
         let whichKey = "appkeyHome";
@@ -176,7 +167,7 @@ exports.addUserDataCron = async (playerTag) => {
                 }
                          
             } catch (e) {
-                next(e);
+                console.log(`error in the addUserDataCron : ${e}`)
             }
             
         });
@@ -329,6 +320,56 @@ exports.addUserDataCron = async (playerTag) => {
         //             .send([infoUser, getBattleLog.data.items]);   
    
     } catch (e) {
-        next(e);
+        console.log("adduserdatacon", e)
     } 
 };
+
+let taskArray = [];
+
+let  getCronTimeUser = async () => {
+    try {
+        const usersTime = await UserLogin.find()
+            .select('cronJobs tag -_id');
+            
+        let newUsersTime = usersTime.filter(function (value) {
+            return ((value.cronJobs.length >= 1) && (value.tag))
+        })
+        return newUsersTime;
+
+      } catch (e) {
+        next(e);
+      }
+}
+
+exports.startCronUsers = async () => {
+
+    for (let i = 0; i < taskArray.length; i++) {
+        taskArray[i].stop();   
+        
+        console.log(taskArray)
+    }
+    try {
+        let param = await getCronTimeUser();
+        taskArray = [];
+        param.forEach(element => {
+            let callFunction = () => {
+                return addUserDataCron(element.tag)
+            }
+            for (let i = 0; i < element.cronJobs.length; i++) {
+                taskArray.push( new CronJob(`0 0 ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
+            }
+            
+        });
+        for (let i = 0; i < taskArray.length; i++) {
+            taskArray[i].start();      
+        }
+        console.log(taskArray)
+    } catch (e) {
+        console.log(e)
+    } 
+};
+
+exports.checkArrayCronjobs = () => {
+    console.log("/////////////////////////////////////////////")
+    console.log(taskArray)
+}

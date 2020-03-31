@@ -255,8 +255,8 @@ animate();
 
 let requestData = async (playerTag) => {
     try {
-        // const url_final = "http://localhost:3000/usernologin/"
-        const url_final = "http://localhost:3000/usernologinoffline/"
+        const url_final = "http://localhost:3000/usernologin/"
+        // const url_final = "http://localhost:3000/usernologinoffline/"
 
         const playerInfo = await axios({
             method: 'POST',
