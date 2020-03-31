@@ -1,6 +1,3 @@
-let tag_input = document.getElementById("tag_input");
-let submit_button = document.getElementById("submit_button")
-
 /////// setting up the three.js scene into mainCont
 
 var scene = new THREE.Scene();
@@ -24,18 +21,17 @@ light3.position.set(0, 0, - 100);
 scene.add(light3);
 
 
-light4 = new THREE.PointLight(0x888888,10);
-light4.position.set(0, 100, 0);
-scene.add(light3);
+// light4 = new THREE.PointLight(0x888888,10);
+// light4.position.set(0, 100, 0);
+// scene.add(light4);
 
-light5 = new THREE.PointLight(0x888888,10);
-light5.position.set(0, - 100, 0);
-scene.add(light3);
+// light5 = new THREE.PointLight(0x888888,10);
+// light5.position.set(0, - 100, 0);
+// scene.add(light5);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 let cont = document.getElementById('mainCont');
-// cont.appendChild( renderer.domElement );
 renderer.domElement.style.zIndex = 10;
 renderer.domElement.style.position = 'absolute';
 renderer.domElement.style.top = 0;
@@ -67,7 +63,7 @@ renderercss.domElement.style.position = 'absolute';
 renderercss.domElement.style.top = 0;
 renderercss.domElement.style.zIndex = 11;
 cont.appendChild( renderercss.domElement );
-////// put the normal renderer inside the renderecss dom elemet as child. 
+////// put the normal renderer inside the renderecss dom element as child. 
 ////// beware zIndex
 // renderercss.domElement.appendChild(renderer.domElement);
 cont.appendChild(renderer.domElement);
@@ -105,36 +101,21 @@ _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
 })
 
-// let OBJloader = new THREE.OBJLoader();
-
-// let meshModelTest2 = false;
-// OBJloader.load(`../assets/3Dmodels/allModels/m16000011.obj`, function (objM) {
-    
-//     let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/MORTIS.png`)});
-//     materialCharacter.map.wrapS = 1003;
-//     materialCharacter.map.wrapT = 1003;
-
-//     meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
-
-//     meshModelTest2 = meshCharacter;
-//     meshCharacter.scale.set(0.04,0.04,0.04);
-//     meshCharacter.position.y =  -80;
-//     meshCharacter.position.z =  250;
-    
-//     // meshModelTest.push(meshCharacter);
-
-//     scene.add(meshCharacter);
-// });
-
-
 ////// with that we set the path of the camera 
 let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
+    new THREE.Vector3( 0, 0, 390 ),
+    new THREE.Vector3( 0, 0, 380 ),
+    new THREE.Vector3( 0, 0, 350 ),
+    new THREE.Vector3( 0, 0, 300 ),
     new THREE.Vector3( 0, 0, 200 ), 
+    new THREE.Vector3( 0, 0, 150 ), 
     new THREE.Vector3( -150, 10, 1 ),
     new THREE.Vector3( -300, 15, 1 ),
     new THREE.Vector3( -300, 15, -100 ),
-    new THREE.Vector3( -300, 15, -200 )
+    new THREE.Vector3( -300, 15, -200 ),
+    new THREE.Vector3( -300, 15, -250 )
+
 ]
 for (let i = 0; i < 200; i++) {
     catMullArray1.push(new THREE.Vector3( -300 + 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, -300 + 35 * Math.cos( 2 * Math.PI * i / 50)));
@@ -153,6 +134,7 @@ sampleClosedSpline1.tension = 0.5;
 ////// create a second path for the camera with second catmullarray 
 let catMullArray2 = [
     new THREE.Vector3( 0, 0, 400 ),
+    new THREE.Vector3( 25, 0, 380 ), 
     new THREE.Vector3( 50, 0, 350 ), 
     new THREE.Vector3( 100, 0, 200 ), 
     new THREE.Vector3( 200, -20, 50 ),
@@ -169,9 +151,6 @@ catMullArray2.push(new THREE.Vector3( 300,  0, -50));
 catMullArray2.push(new THREE.Vector3( 200,  0, 0));
 catMullArray2.push(new THREE.Vector3( 200,  0, ));
 catMullArray2.push(new THREE.Vector3( 50,  0, 350));
-
-
-
 
 let sampleClosedSpline2 = new THREE.CatmullRomCurve3( catMullArray2, true );
 sampleClosedSpline2.curveType = "catmullrom";
@@ -240,10 +219,7 @@ function animate() {
         else {
             el.rotation.y+= 0.02 * (index%2 - 0.5);
         }
-        
-
     })
-
     ///// this part is to create inertia with the scrolling
     ///// y_scroll_position is updated through scroll callback function 
     camPosIndex = 0.92 * camPosIndex + 0.08 * y_scroll_position;
@@ -267,8 +243,7 @@ let requestData = async (playerTag) => {
                 whichKey: "appkeyHome"
 
             } 
-        })  
-        
+        })         
         makePlayerContainer(playerInfo.data[0], meshModelTest);
         console.log(playerInfo.data[1]);
         makeBattleSection(playerInfo.data[1]);
@@ -278,32 +253,76 @@ let requestData = async (playerTag) => {
 };
 
 
-submit_button.addEventListener("click",()=>{
-    playerTag = tag_input.value;
+////// place an input div for tag request inside the css scene 
+////// asynchronous => settimeout for addeventlistener.
+let divInputTag = document.createElement('div');
+divInputTag.classList.add("header3D");
+divInputTag.innerHTML = `<h2>BRAWLDATA</h2>`;
+let inputCont = document.createElement('div');
+let inputText = document.createElement('input');
+inputText.setAttribute("id", "tag_input");
+inputText.setAttribute("type", "text");
 
-    console.log(playerTag);
+let labelDiv = document.createElement('label');
+labelDiv.setAttribute("for", "submit_button");
+labelDiv.innerText = "Player's tag";
+labelDiv.setAttribute("id", "submit_button_label")
 
-    /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
-    while(scene.children.length > 8){ 
-            scene.remove(scene.children[8]); 
-    }
-    while(sceneCSS.children.length > 0){ 
-        sceneCSS.remove(sceneCSS.children[0]); 
-    }
-    requestData(playerTag);
+let inputButton = document.createElement('input');
+inputButton.setAttribute("type", "button");
+inputButton.setAttribute("id", "submit_button");
 
-  // request_image(date1);
-})
+inputCont.appendChild(inputText);
+inputCont.appendChild(labelDiv);
+inputCont.appendChild(inputButton);
+
+divInputTag.appendChild(inputCont);
+
+divInputTag.style.color = "rgb(255, 255, 150)";
+
+let cssObjectInput = new THREE.CSS3DObject(divInputTag);
+cssObjectInput.position.x = 0;
+cssObjectInput.position.y = 200;
+cssObjectInput.position.z = 60;
+
+sceneCSS.add(cssObjectInput);
+
+//// loading cssobject is asynchronous, so the use of settimeout to get the elements
+
+setTimeout(function(){ 
+    let submit_button = document.getElementById("submit_button");
+    let tag_input = document.getElementById("tag_input");
+
+
+    submit_button.addEventListener("click",()=>{
+        playerTag = tag_input.value;
+    
+        console.log(playerTag);
+    
+        /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
+        while(scene.children.length > 9){ 
+                scene.remove(scene.children[9]); 
+        }
+        while(sceneCSS.children.length > 1){ 
+            sceneCSS.remove(sceneCSS.children[1]); 
+        }
+        requestData(playerTag);    
+    })
+}, 1000);
+
+
+
+
 
 let callPlayerInfo = (tag) => {
     console.log(playerTag);
 
     /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
-    while(scene.children.length > 8){ 
-            scene.remove(scene.children[8]); 
+    while(scene.children.length > 9){ 
+            scene.remove(scene.children[9]); 
     }
-    while(sceneCSS.children.length > 0){ 
-        sceneCSS.remove(sceneCSS.children[0]); 
+    while(sceneCSS.children.length > 1){ 
+        sceneCSS.remove(sceneCSS.children[1]); 
     }
     requestData(tag);
     goback();
@@ -334,7 +353,7 @@ function goto () {
 function goto2 () {
     pathVal = sampleClosedSpline2;
     indexPath = 2;
-    window.scrollTo(0,550)
+    window.scrollTo(0,600)
 }
 
 let burger = document.getElementById("burger");

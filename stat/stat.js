@@ -9,7 +9,7 @@ exports.task001 = new CronJob('0 0 11,23 * * *', addBattlesHighRank, null, true,
 
 exports.task002 = new CronJob('0 */3 * * * *', startCronUsers, null, true, 'Europe/Berlin');
 
-exports.task003 = new CronJob('0 */1 * * * *', checkArrayCronjobs, null, true, 'Europe/Berlin');
+// exports.task003 = new CronJob('0 */1 * * * *', checkArrayCronjobs, null, true, 'Europe/Berlin');
 
 
 

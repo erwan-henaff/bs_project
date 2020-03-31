@@ -1,4 +1,11 @@
-let playerInfoCont = document.getElementById("playerInfoCont");
+
+
+
+
+
+
+
+
 
 const makePlayerContainer = (data, meshModelTest) => {
 
