@@ -1,33 +1,19 @@
 /////// setting up the three.js scene into mainCont
-
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1200 );
 camera.position.z = 400;
 camera.lookAt(0,0,0);
 
-// control.target = new THREE.Vector3(targetX, targetY, targetZ);
-
-
+/////// lights 
 light = new THREE.PointLight(0x444444,10);
 light.position.set(0,300,500);
 scene.add(light);
-
 light2 = new THREE.PointLight(0x888888,10);
 light2.position.set(0, 0, 100);
 scene.add(light2);
-
 light3 = new THREE.PointLight(0x888888,10);
 light3.position.set(0, 0, - 100);
 scene.add(light3);
-
-
-// light4 = new THREE.PointLight(0x888888,10);
-// light4.position.set(0, 100, 0);
-// scene.add(light4);
-
-// light5 = new THREE.PointLight(0x888888,10);
-// light5.position.set(0, - 100, 0);
-// scene.add(light5);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -35,7 +21,6 @@ let cont = document.getElementById('mainCont');
 renderer.domElement.style.zIndex = 10;
 renderer.domElement.style.position = 'absolute';
 renderer.domElement.style.top = 0;
-
 
 var geometry = new THREE.IcosahedronGeometry(7, 2);
 var edges = new THREE.EdgesGeometry( geometry );
@@ -54,8 +39,7 @@ lineEdge2.position.y = 0;
 lineEdge2.position.z = -300;
 scene.add( lineEdge2 );
 
-
-
+///////////// sceneCSS
 let sceneCSS = new THREE.Scene();
 renderercss = new THREE.CSS3DRenderer();
 renderercss.setSize(window.innerWidth, window.innerHeight);
@@ -85,7 +69,7 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
         
     let mesh2 = new THREE.Mesh(geometry, material);
     geometry.center();
-    mesh2.position.y = -100;
+    mesh2.position.y = 95;
     mesh2.position.z = 250;
     scene.add(mesh2);
 } );
@@ -94,28 +78,28 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
 let _3Dloader = new THREE.GLTFLoader();
 let meshShelly = false ;
 _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
-    gltf.scene.children[0].position.y = -80;
+    gltf.scene.children[0].position.y = -90;
     gltf.scene.children[0].position.z = 250;
     meshShelly = gltf.scene;
     gltf.scene.children[0].scale.set(0.04,0.04,0.04);
     scene.add(gltf.scene);
 })
 
-////// with that we set the path of the camera 
+////// with that we set the first path of the camera 
 let catMullArray1 = [
     new THREE.Vector3( 0, 0, 400 ),
     new THREE.Vector3( 0, 0, 390 ),
     new THREE.Vector3( 0, 0, 380 ),
     new THREE.Vector3( 0, 0, 350 ),
     new THREE.Vector3( 0, 0, 300 ),
-    new THREE.Vector3( 0, 0, 200 ), 
-    new THREE.Vector3( 0, 0, 150 ), 
-    new THREE.Vector3( -150, 10, 1 ),
-    new THREE.Vector3( -300, 15, 1 ),
-    new THREE.Vector3( -300, 15, -100 ),
+    new THREE.Vector3( 0, 0, 200 ),
+    new THREE.Vector3( 0, 10, 150 ), 
+    new THREE.Vector3( -20, 10, -20 ),
+    new THREE.Vector3( -100, 15, -100 ),
+    new THREE.Vector3( -150, 15, -150 ),
+    new THREE.Vector3( -180, 15, -180 ),
     new THREE.Vector3( -300, 15, -200 ),
     new THREE.Vector3( -300, 15, -250 )
-
 ]
 for (let i = 0; i < 200; i++) {
     catMullArray1.push(new THREE.Vector3( -300 + 35 * Math.sin( 2 * Math.PI * i / 50), 13 - 0.36 * i, -300 + 35 * Math.cos( 2 * Math.PI * i / 50)));
@@ -125,11 +109,9 @@ catMullArray1. push(new THREE.Vector3(-100, 10, 0));
 catMullArray1. push(new THREE.Vector3(0,0, 200));
 catMullArray1. push(new THREE.Vector3(0,0, 400));
 
-
-
 let sampleClosedSpline1 = new THREE.CatmullRomCurve3( catMullArray1, true );
 sampleClosedSpline1.curveType = "catmullrom";
-sampleClosedSpline1.tension = 0.5;
+sampleClosedSpline1.tension = 0.8;
 
 ////// create a second path for the camera with second catmullarray 
 let catMullArray2 = [
@@ -144,9 +126,6 @@ let catMullArray2 = [
 for (let i = 0; i < 50; i++) {
     catMullArray2.push(new THREE.Vector3( 300 + 210 * Math.sin( Math.PI * i / 25), -20, -300 + 210 * Math.cos( Math.PI * i / 25)));
 }
-// for (let i = 0; i < 24; i++) {
-//     catMullArray2.push(new THREE.Vector3( 200, - 90 * Math.sin(i * Math.PI / (25 * 2)), 90 * Math.cos(i* Math.PI / (25 * 2))));
-// }
 catMullArray2.push(new THREE.Vector3( 300,  0, -50));
 catMullArray2.push(new THREE.Vector3( 200,  0, 0));
 catMullArray2.push(new THREE.Vector3( 200,  0, ));
@@ -160,26 +139,32 @@ sampleClosedSpline2.tension = 0.5;
 //// we will change path value with the click event in the menu 
 let pathVal = sampleClosedSpline1;
 let indexPath = 1;
-
 let y_scroll_position = 0; 
 let camPosIndex = 0;
 
+
+
 function updateCamera(camPosIndex, path, indexPath) {
     let camPos = path.getPoint(camPosIndex / 2000);
-    let camLookAt = path.getPoint((camPosIndex + 10)/2000)
+    let camLookAt = path.getPoint((camPosIndex + 2)/2000)
 
     camera.position.x = camPos.x;
     camera.position.y = camPos.y;
     camera.position.z = camPos.z;
+
+    // cssObjectStart.position.x = camera.position.x -110;
+    // cssObjectStart.position.y = camera.position.y +210;
+    // cssObjectStart.position.z = camera.position.z -300;
+
     if (indexPath === 1 && camPos.z > 200) {
         camera.lookAt(camLookAt.x, camPos.y ,camLookAt.z);
         renderercss.domElement.style.zIndex = 11;
     }
-    if (indexPath === 1 && camPos.z <= 200 && camPos.z > -150) {
+    if (indexPath === 1 && camPos.z <= 200 && camPos.z > -80) {
         camera.lookAt(camLookAt.x, camPos.y , camLookAt.z);
         renderercss.domElement.style.zIndex = 9;
     }
-    if (indexPath === 1 && camPos.z <= - 150) {
+    if (indexPath === 1 && camPos.z <= - 80) {
         camera.lookAt(-300, camPos.y , -300);
         renderercss.domElement.style.zIndex = 9;
     }
@@ -187,7 +172,6 @@ function updateCamera(camPosIndex, path, indexPath) {
         camera.lookAt(300, 30 , -300);
         renderercss.domElement.style.zIndex = 11;
     }
-    
 }
 //// bellow is the scroll function that will feed/define the 
 //// camposIndex of the updateCamera function inside the requestAnimationFrame Loop of animate function 
@@ -257,7 +241,6 @@ let requestData = async (playerTag) => {
 ////// asynchronous => settimeout for addeventlistener.
 let divInputTag = document.createElement('div');
 divInputTag.classList.add("header3D");
-divInputTag.innerHTML = `<h2>BRAWLDATA</h2>`;
 let inputCont = document.createElement('div');
 let inputText = document.createElement('input');
 inputText.setAttribute("id", "tag_input");
@@ -278,17 +261,12 @@ inputCont.appendChild(inputButton);
 
 divInputTag.appendChild(inputCont);
 
-divInputTag.style.color = "rgb(255, 255, 150)";
-
 let cssObjectInput = new THREE.CSS3DObject(divInputTag);
 cssObjectInput.position.x = 0;
-cssObjectInput.position.y = 200;
+cssObjectInput.position.y = 170;
 cssObjectInput.position.z = 60;
-
 sceneCSS.add(cssObjectInput);
-
 //// loading cssobject is asynchronous, so the use of settimeout to get the elements
-
 setTimeout(function(){ 
     let submit_button = document.getElementById("submit_button");
     let tag_input = document.getElementById("tag_input");
@@ -316,7 +294,6 @@ setTimeout(function(){
 
 let callPlayerInfo = (tag) => {
     console.log(playerTag);
-
     /////// delete object present in the scene except the first 2 (brawl data and IcosahedronGeometry), might need more for texture and geometry
     while(scene.children.length > 9){ 
             scene.remove(scene.children[9]); 
@@ -343,17 +320,17 @@ document.getElementById("link4").addEventListener("click", transform);
 function goback () {
     pathVal = sampleClosedSpline1;
     indexPath = 1;
-    window.scrollTo(0,0)
+    window.scrollTo(0,0);
 }
 function goto () {
     pathVal = sampleClosedSpline1;
     indexPath = 1;
-    window.scrollTo(0,250)
+    window.scrollTo(0,350);
 }
 function goto2 () {
     pathVal = sampleClosedSpline2;
     indexPath = 2;
-    window.scrollTo(0,600)
+    window.scrollTo(0,650);
 }
 
 let burger = document.getElementById("burger");

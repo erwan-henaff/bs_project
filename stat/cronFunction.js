@@ -1,6 +1,8 @@
 const axios = require('axios');
 const BattleHighRank = require('../models/BattlesHighRank');
 const UserLogin = require('../models/UserLogin');
+const User = require('../models/Users');
+const Battle = require('../models/Battles');
 
 const CronJob = require('cron').CronJob;
 
@@ -111,17 +113,13 @@ let addUserDataCron = async (playerTag) => {
 
     try {
         let whichKey = "appkeyHome";
-
         let Bearer = "";
-
         if (whichKey=== "appkeyDCI") Bearer = `Bearer ${appkeyDCI}`
         else if (whichKey=== "appkeyHome") Bearer = `Bearer ${appkeyHome}`
 
         let url1 = "https://api.brawlstars.com/v1/players/%23" + playerTag
         let url2 = "https://api.brawlstars.com/v1/players/%23" + playerTag + "/battlelog"
-
         let arrayURL = [url1, url2];
-        
         //////////////////////////////////////////////////////////////////////////////////////////
         //////////// get the battlelog from API, it's an object with "items" key being an array
         let userAndBattlelog = await Promise.all(
@@ -141,7 +139,6 @@ let addUserDataCron = async (playerTag) => {
         let getBattleLog = userAndBattlelog[1];
         
         getBattleLog.data.items.forEach( async (element, index) => {
-
             try {
                 const battle = new Battle (element);
 
@@ -164,8 +161,7 @@ let addUserDataCron = async (playerTag) => {
                 }
                 else {
                     console.log(`${index} battle is already in the database`);
-                }
-                         
+                }                        
             } catch (e) {
                 console.log(`error in the addUserDataCron : ${e}`)
             }
@@ -176,7 +172,6 @@ let addUserDataCron = async (playerTag) => {
         //  take the user info of the response and store it in database
 
         let infoUser = userAndBattlelog[0].data;
-
 
         let checkUserExist = await User.findOne({tag: infoUser.tag}, (err, result)=> {
             if (err) {
@@ -189,8 +184,7 @@ let addUserDataCron = async (playerTag) => {
         
         if (checkUserExist === null) {
 
-            /////////// this part is to create an array of the trophy level through time
-            
+            /////////// this part is to create an array of the trophy level through time            
             let trophiesNow = [{
                 trophies : infoUser.trophies
             }];
@@ -229,14 +223,6 @@ let addUserDataCron = async (playerTag) => {
             user.duoVictories = duoVictoriesNow;
 
             user.brawlers.forEach((el,index) => el.trophies = brawlersTrophiesNow[index]);
-
-            // user.trophies.push(trophiesNow);
-            // user.highestTrophies.push(highestTrophiesNow);
-            // user['3vs3Victories'].push(_3vs3VictoriesNow);
-            // user.soloVictories.push(soloVictoriesNow);
-            // user.duoVictories.push(duoVictoriesNow);
-
-            // user.brawlers.forEach((el,index) => el.trophies.push(brawlersTrophiesNow[index]));
             
             await user.save();
             console.log(`${infoUser.name} with tag ${infoUser.tag} has been saved`);
@@ -312,13 +298,7 @@ let addUserDataCron = async (playerTag) => {
             await User.replaceOne({ tag : infoUser.tag}, infoUser);
 
             console.log(`new trophies level of ${infoUser.name} with tag ${infoUser.tag} has been saved`);
-        }
-
-        // ////////////////////////////////////// send back to frontend the response with user infos and battlelog
-        // res
-        //             .status(200)
-        //             .send([infoUser, getBattleLog.data.items]);   
-   
+        }   
     } catch (e) {
         console.log("adduserdatacon", e)
     } 
@@ -335,18 +315,14 @@ let  getCronTimeUser = async () => {
             return ((value.cronJobs.length >= 1) && (value.tag))
         })
         return newUsersTime;
-
-      } catch (e) {
-        next(e);
-      }
+    } catch (e) {
+        console.log("error in getCronTimeUser line 313, cronFunction.js", e)
+    }
 }
 
 exports.startCronUsers = async () => {
-
     for (let i = 0; i < taskArray.length; i++) {
-        taskArray[i].stop();   
-        
-        console.log(taskArray)
+        taskArray[i].stop();           
     }
     try {
         let param = await getCronTimeUser();
@@ -358,7 +334,6 @@ exports.startCronUsers = async () => {
             for (let i = 0; i < element.cronJobs.length; i++) {
                 taskArray.push( new CronJob(`0 0 ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
             }
-            
         });
         for (let i = 0; i < taskArray.length; i++) {
             taskArray[i].start();      
@@ -369,7 +344,23 @@ exports.startCronUsers = async () => {
     } 
 };
 
-exports.checkArrayCronjobs = () => {
-    console.log("/////////////////////////////////////////////")
-    console.log(taskArray)
+///////// popularity 200 best 
+
+exports.popularity = async () => {
+    // let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
+    // let allBattleUmiSolo = await Battle.find({"battle.players.name" : "Brunor"})
+    let allBattleUmiTeam1 = await Battle.find({ "battle.teams.0.name": "umi no tamashi" })
+    let allBattleUmiTeam2 = await Battle.find({ "battle.teams.1.name": "umi no tamashi" })
+    let allBattleUmiTeam3 = await Battle.find({ "battle.teams.2.name": "umi no tamashi" })
+
+
+
+    // db.users.find( { name: "John"}, { items: { $elemMatch: { item_id: "1234" } } })
+
+    // db.nested.findOne({"level1":{"$elemMatch":{"$in":['item00']}} })
+
+
+    // let allBattles200BB = await BattleHighRank.find({"event.mode" : "brawlBall"})
+    // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+    console.log( allBattleUmiTeam1.length,allBattleUmiTeam2.length,allBattleUmiTeam3.length );
 }
