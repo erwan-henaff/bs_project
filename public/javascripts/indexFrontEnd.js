@@ -92,9 +92,10 @@ let catMullArray1 = [
     new THREE.Vector3( 0, 0, 380 ),
     new THREE.Vector3( 0, 0, 350 ),
     new THREE.Vector3( 0, 0, 300 ),
-    new THREE.Vector3( 0, 0, 200 ),
-    new THREE.Vector3( 0, 10, 150 ), 
+    new THREE.Vector3( 0, 0, 100 ),
+    new THREE.Vector3( 0, 0, 20 ),
     new THREE.Vector3( -20, 10, -20 ),
+    new THREE.Vector3( -80, 15, -80 ),
     new THREE.Vector3( -100, 15, -100 ),
     new THREE.Vector3( -150, 15, -150 ),
     new THREE.Vector3( -180, 15, -180 ),
@@ -111,7 +112,7 @@ catMullArray1. push(new THREE.Vector3(0,0, 400));
 
 let sampleClosedSpline1 = new THREE.CatmullRomCurve3( catMullArray1, true );
 sampleClosedSpline1.curveType = "catmullrom";
-sampleClosedSpline1.tension = 0.8;
+sampleClosedSpline1.tension = 0.2;
 
 ////// create a second path for the camera with second catmullarray 
 let catMullArray2 = [
@@ -266,7 +267,8 @@ cssObjectInput.position.x = 0;
 cssObjectInput.position.y = 170;
 cssObjectInput.position.z = 60;
 sceneCSS.add(cssObjectInput);
-//// loading cssobject is asynchronous, so the use of settimeout to get the elements
+//// loading cssobject is asynchronous, so the use of a settimeout to get the elements
+//// can do with async await as well
 setTimeout(function(){ 
     let submit_button = document.getElementById("submit_button");
     let tag_input = document.getElementById("tag_input");
@@ -284,7 +286,8 @@ setTimeout(function(){
         while(sceneCSS.children.length > 1){ 
             sceneCSS.remove(sceneCSS.children[1]); 
         }
-        requestData(playerTag);    
+        requestData(playerTag);
+        tag_input.value = "";  
     })
 }, 1000);
 

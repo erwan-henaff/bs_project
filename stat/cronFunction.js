@@ -348,19 +348,24 @@ exports.startCronUsers = async () => {
 
 exports.popularity = async () => {
     // let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
-    // let allBattleUmiSolo = await Battle.find({"battle.players.name" : "Brunor"})
-    let allBattleUmiTeam1 = await Battle.find({ "battle.teams.0.name": "umi no tamashi" })
-    let allBattleUmiTeam2 = await Battle.find({ "battle.teams.1.name": "umi no tamashi" })
-    let allBattleUmiTeam3 = await Battle.find({ "battle.teams.2.name": "umi no tamashi" })
+    // let allBattleUmiTeam1 = await Battle.find({ "battle.teams.0.name": "umi no tamashi", "event.mode": "duoShowdown"})
+    // let allBattleUmiTeam2 = await Battle.find({ "battle.teams.1.name": "umi no tamashi", "event.mode": "duoShowdown" })
+    // let allBattleUmiTeam3 = await Battle.find({ "battle.teams.2.name": "umi no tamashi", "event.mode": "duoShowdown" })
+    // let allBattleUmiTeam4 = await Battle.find({ "battle.teams.3.name": "umi no tamashi", "event.mode": "duoShowdown" })
+    // let allBattleUmiTeam5 = await Battle.find({ "battle.teams.4.name": "umi no tamashi", "event.mode": "duoShowdown" })
 
+    let allBattleUMI = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown"} );
+    let duoVictory = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown", "battle.rank" : 1 } );
 
-
-    // db.users.find( { name: "John"}, { items: { $elemMatch: { item_id: "1234" } } })
-
-    // db.nested.findOne({"level1":{"$elemMatch":{"$in":['item00']}} })
-
+    
 
     // let allBattles200BB = await BattleHighRank.find({"event.mode" : "brawlBall"})
     // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
-    console.log( allBattleUmiTeam1.length,allBattleUmiTeam2.length,allBattleUmiTeam3.length );
+    
+    console.log(allBattleUMI.length);
+    console.log(duoVictory.length);
+
+
+
 }
+

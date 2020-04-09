@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 const makePlayerContainer = (data, meshModelTest) => {
 
     console.log(data);
