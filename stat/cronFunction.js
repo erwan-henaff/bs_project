@@ -348,24 +348,27 @@ exports.startCronUsers = async () => {
 
 exports.popularity = async () => {
     // let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
-    // let allBattleUmiTeam1 = await Battle.find({ "battle.teams.0.name": "umi no tamashi", "event.mode": "duoShowdown"})
-    // let allBattleUmiTeam2 = await Battle.find({ "battle.teams.1.name": "umi no tamashi", "event.mode": "duoShowdown" })
-    // let allBattleUmiTeam3 = await Battle.find({ "battle.teams.2.name": "umi no tamashi", "event.mode": "duoShowdown" })
-    // let allBattleUmiTeam4 = await Battle.find({ "battle.teams.3.name": "umi no tamashi", "event.mode": "duoShowdown" })
-    // let allBattleUmiTeam5 = await Battle.find({ "battle.teams.4.name": "umi no tamashi", "event.mode": "duoShowdown" })
-
     let allBattleUMI = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown"} );
     let duoVictory = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown", "battle.rank" : 1 } );
-
-    
-
     // let allBattles200BB = await BattleHighRank.find({"event.mode" : "brawlBall"})
     // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
-    
     console.log(allBattleUMI.length);
     console.log(duoVictory.length);
 
-
+    let allSoloUMI = await Battle.find({ "battle.players.name" : "umi no tamashi" , "event.mode": "soloShowdown"} );
+    let allSoloVictoryUMI = await Battle.find({ "battle.players.name" : "umi no tamashi" , "event.mode": "soloShowdown", "battle.rank" :1 } );
+    console.log("----")
+    console.log(allSoloUMI.length);
+    console.log(allSoloVictoryUMI.length);
 
 }
 
+exports.cleaning2MonthHighRank = async () => {
+    let allBattle2Month_1 = await BattleHighRank.find({ battleTime : {$regex : /^202002/ } })
+    console.log(allBattle2Month_1.length);
+    let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202002/ } })
+    console.log(oldestBattleDeletion);;
+
+    console.log(oldestBattleDeletion.deletedCount);;
+
+}
