@@ -15,12 +15,14 @@ const userLoginRouter = require('./routes/userlogin');
 
 
 ///////////////////////////   cronjob stat 
-const {task001, task002, task003, task004} = require('./stat/stat');
+const {task001, task002, task003, task004, task005} = require('./stat/stat');
 // let taskArray = [];
 task001.start();
 task002.start();
 task003.start();
 task004.start();
+task005.start();
+
 
 
 var app = express();

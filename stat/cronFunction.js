@@ -372,3 +372,66 @@ exports.cleaning2MonthHighRank = async () => {
     console.log(oldestBattleDeletion.deletedCount);;
 
 }
+
+exports.brawlersRanking = async () => {
+
+    try {
+        let Bearer = `Bearer ${appkeyHome}`
+
+        let listBrawlers = await axios({
+            method: 'GET',  
+            url: "https://api.brawlstars.com/v1/brawlers",
+            headers: {
+                "Accept": "application/json",
+                'authorization': Bearer
+            }
+        })
+        listBrawlers = listBrawlers.data.items.map(element => {
+            return [element.name, element.id]
+        })
+
+        let arrayUrlBrawler = []
+        for (let i = 0; i < listBrawlers.length; i++) {
+            arrayUrlBrawler.push([`https://api.brawlstars.com/v1/rankings/global/brawlers/${listBrawlers[i][1]}`, listBrawlers[i][0], listBrawlers[i][1]])
+        };
+
+        let allBrawlerRanking = await Promise.all(
+            arrayUrlBrawler.map(async el => {
+                let promise = await axios({
+                    method: 'GET',  
+                    url: el[0],
+                    headers: {
+                        "Accept": "application/json",
+                        'authorization': Bearer
+                    }
+                })
+                return [el[1], el[2], promise.data.items];
+            })     
+        );
+        
+        allBrawlerRanking = allBrawlerRanking.map(element => {
+            sumTrophies = element[2].reduce((acc, cur) => {
+                acc += cur.trophies
+                return acc
+            },0 )
+            sumPlayerSup1000 = element[2].filter((el)=>{
+                return (el.trophies >= 1000 )
+            } )
+            
+            return ([element[0], element[1], sumTrophies/200, sumPlayerSup1000.length])
+        });
+
+        allBrawlerRanking.sort(function(a, b){return b[2]-a[2]});
+        
+        // console.log(allBrawlerRanking[0])
+
+        // console.log(allBrawlerRanking.length)
+
+        console.log(allBrawlerRanking)
+
+    
+    } catch (e) {
+        console.log("error in brawlersRanking cronFunction.js", e)
+    }
+    
+}
