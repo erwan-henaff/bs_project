@@ -48,7 +48,7 @@ exports.addBattlesHighRank = async () => {
                 let listTrunkBattleLog = await Promise.all(
                     listTrunk[i].map(async el =>{
                         let url = `https://api.brawlstars.com/v1/players/%23${el}/battlelog`;
-                        return await axios({
+                        let resQuery = await axios({
                             method: 'GET',  
                             url: url,
                             headers: {
@@ -56,13 +56,18 @@ exports.addBattlesHighRank = async () => {
                                 'authorization': Bearer
                             }
                         });
+                        resQuery.data.items.forEach(element => {
+                            element.playerTag = el;
+                        })
+                        return resQuery.data.items
                     })
                 )
-                let listTrunkBattleLogItems = listTrunkBattleLog.map(el=> {
-                    return el.data.items
-                })
+                // let listTrunkBattleLogItems = listTrunkBattleLog.map(el=> {
+                //     el[1].data.items.playerTag = el[0]
+                //     return el[1].data.items
+                // })
                 ////// transform the array of 25 battlogs in one array of 25 * 25 battles 
-                let arrOf25PlayersResult = listTrunkBattleLogItems.reduce((acc, curVal)=>{
+                let arrOf25PlayersResult = listTrunkBattleLog.reduce((acc, curVal)=>{
                     return acc.concat(curVal)
                 },[])
 
@@ -72,7 +77,7 @@ exports.addBattlesHighRank = async () => {
                         const battle = new BattleHighRank (element);
                         //// here we check for each battle with findOne of mongoose if there is a battle with the battletime 
                         //// return null is none, one object if exist, or error if error
-                        const checkBattleExist = await BattleHighRank.findOne({battleTime: battle.battleTime, "event.mode" : battle.event.mode}, (err, result)=> {
+                        const checkBattleExist = await BattleHighRank.findOne({battleTime: battle.battleTime, "event.mode" : battle.event.mode, playerTag: battle.playerTag}, (err, result)=> {
                             if (err) {
                                 return err
                             }
@@ -96,7 +101,7 @@ exports.addBattlesHighRank = async () => {
                 });
                 console.log(`************inside the ${i} setTimeout loop trigger = true `)
 
-            }, 10000*i)
+            }, 20000*i)
             ///// above the setTimeout function is triggered 10 seconds * i  inside the for loop, 
             ///// so 8 setTimeout or launched
         }   
@@ -364,9 +369,9 @@ exports.victoryShowdown = async () => {
 }
 
 exports.cleaning2MonthHighRank = async () => {
-    let allBattle2Month_1 = await BattleHighRank.find({ battleTime : {$regex : /^202002/ } })
-    console.log(allBattle2Month_1.length);
-    let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202002/ } })
+    // let allBattle2Month_1 = await BattleHighRank.find({ battleTime : {$regex : /^202003/ } })
+    // console.log(allBattle2Month_1.length);
+    let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202004/ } })
     console.log(oldestBattleDeletion.deletedCount);
 
     // let allBattleOneday1 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200301/ } })
@@ -379,16 +384,16 @@ exports.cleaning2MonthHighRank = async () => {
 
     
 
-    for (let i = 0; i < 9; i++) {
-        let regex = new RegExp(`^2020030${i}`);
-        let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
-        console.log(allBattleOnedayiii.deletedCount)
-    }
-    for (let i = 10; i < 15; i++) {
-        let regex = new RegExp(`^202003${i}`);
-        let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
-        console.log(allBattleOnedayiii.deletedCount)
-    }
+    // for (let i = 0; i < 9; i++) {
+    //     let regex = new RegExp(`^2020030${i}`);
+    //     let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
+    //     console.log(allBattleOnedayiii.deletedCount)
+    // }
+    // for (let i = 10; i < 15; i++) {
+    //     let regex = new RegExp(`^202003${i}`);
+    //     let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
+    //     console.log(allBattleOnedayiii.deletedCount)
+    // }
 
 }
 
@@ -502,8 +507,9 @@ exports.brawlersPickRate = async() => {
             return [element.name, element.id]
         });
 
-        // for (let i = 0; i < listBrawlers.length; i++) {
-            for (let i = 0; i < 3; i++) {
+        let arrPickBattle = [];
+        for (let i = 0; i < listBrawlers.length; i++) {
+            // for (let i = 0; i < 3; i++) {
 
             let pickTeam1 = await BattleHighRank.find({
                 "battle.teams.0.brawler.id" : listBrawlers[i][1],
@@ -514,32 +520,49 @@ exports.brawlersPickRate = async() => {
                 "battle.teams.1.brawler.id" : listBrawlers[i][1],
                 $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}]
             })
-            console.log( `${listBrawlers[i][0]} : ${pickTeam1.length + pickTeam2.length}`) 
             
             let winTeam1 = await BattleHighRank.find({
                 "battle.teams.0.brawler.id" : listBrawlers[i][1],
                 $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
                 $where: function() {
-                    // return (this.battle.teams[0][0].name == this.battle.starPlayer.name || this.battle.teams[0][1].name == this.battle.starPlayer.name || this.battle.teams[0][2].name == this.battle.starPlayer.name)
                     if (this.battle.starPlayer) {
                         return (this.battle.teams[0][0].name == this.battle.starPlayer.name || this.battle.teams[0][1].name == this.battle.starPlayer.name || this.battle.teams[0][2].name == this.battle.starPlayer.name)
                     }
                     else return false
-                    
                 }
-
-
             })
-            console.log( `${pickTeam1.length}`) 
-            console.log("winteam1 -- ", winTeam1.length)
-            // let winTeam2 = await BattleHighRank.find({
-            //     "battle.teams.1.brawler.id" : listBrawlers[i][1],
-            //     $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
-            //     "battle.teams.1.name" : "$battle.starPlayer.name"
+            let winTeam2 = await BattleHighRank.find({
+                "battle.teams.1.brawler.id" : listBrawlers[i][1],
+                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
+                $where: function() {
+                    if (this.battle.starPlayer) {
+                        return (this.battle.teams[1][0].name == this.battle.starPlayer.name || this.battle.teams[1][1].name == this.battle.starPlayer.name || this.battle.teams[1][2].name == this.battle.starPlayer.name)
+                    }
+                    else return false
+                }
+            })
+            arrPickBattle.push( [(pickTeam1.length + pickTeam2.length), (winTeam1.length + winTeam2.length) * 100 /   (pickTeam1.length + pickTeam2.length) , listBrawlers[i][0]]);
 
-            // })
-            // console.log("winteam2 -- ", winTeam2.length)
+            console.log("****************")
+            console.log( `pick : ${listBrawlers[i][0]} : ${pickTeam1.length + pickTeam2.length}`) 
+            console.log(`success : ${(winTeam1.length + winTeam2.length) * 100 /   (pickTeam1.length + pickTeam2.length)}`)
 
+        }
+        console.log("ddddddddddddddddddddddddddddd")
+        console.log(arrPickBattle.length)
+        console.log(arrPickBattle)
+
+        let sum = 0;
+        for (let i = 0; i < arrPickBattle.length; i++) {
+            sum += arrPickBattle[i][0];
+            
+        }
+        console.log("sum :", sum);
+        for (let i = 0; i < arrPickBattle.length; i++) {
+            console.log("________")
+            console.log( ` ${arrPickBattle[i][2]}`)
+            console.log( `pick   ${arrPickBattle[i][0] * 100 /sum}`) 
+            console.log(`success :  ${arrPickBattle[i][1]}`)            
         }
 
     }

@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const BattleHighRankSchema = new Schema ({
     id: false,
+    playerTag: String,
     battleTime : {
         $type: String
     },
