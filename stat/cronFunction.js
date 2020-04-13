@@ -346,7 +346,7 @@ exports.startCronUsers = async () => {
 
 ///////// popularity 200 best 
 
-exports.popularity = async () => {
+exports.victoryShowdown = async () => {
     // let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
     let allBattleUMI = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown"} );
     let duoVictory = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown", "battle.rank" : 1 } );
@@ -367,9 +367,28 @@ exports.cleaning2MonthHighRank = async () => {
     let allBattle2Month_1 = await BattleHighRank.find({ battleTime : {$regex : /^202002/ } })
     console.log(allBattle2Month_1.length);
     let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202002/ } })
-    console.log(oldestBattleDeletion);;
+    console.log(oldestBattleDeletion.deletedCount);
 
-    console.log(oldestBattleDeletion.deletedCount);;
+    // let allBattleOneday1 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200301/ } })
+    // let allBattleOneday2 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200302/ } })
+    // let allBattleOneday3 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200303/ } })
+    // let allBattleOneday4 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200304/ } })
+    // let allBattleOneday5 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200305/ } })
+    // let allBattleOneday6 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200306/ } })
+    // let allBattleOneday7 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200307/ } })
+
+    
+
+    for (let i = 0; i < 9; i++) {
+        let regex = new RegExp(`^2020030${i}`);
+        let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
+        console.log(allBattleOnedayiii.deletedCount)
+    }
+    for (let i = 10; i < 15; i++) {
+        let regex = new RegExp(`^202003${i}`);
+        let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
+        console.log(allBattleOnedayiii.deletedCount)
+    }
 
 }
 
@@ -416,22 +435,115 @@ exports.brawlersRanking = async () => {
             },0 )
             sumPlayerSup1000 = element[2].filter((el)=>{
                 return (el.trophies >= 1000 )
-            } )
-            
+            } )        
             return ([element[0], element[1], sumTrophies/200, sumPlayerSup1000.length])
         });
-
         allBrawlerRanking.sort(function(a, b){return b[2]-a[2]});
-        
-        // console.log(allBrawlerRanking[0])
-
-        // console.log(allBrawlerRanking.length)
-
         console.log(allBrawlerRanking)
-
-    
     } catch (e) {
         console.log("error in brawlersRanking cronFunction.js", e)
+    }  
+}
+
+exports.modePopularityHighRank = async () => {
+    try {
+        let allBattles200Brawlball = await BattleHighRank.find({"event.mode" : "brawlBall"})
+        let allBattles200Gemgrab = await BattleHighRank.find({"event.mode" : "gemGrab"})
+        // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+
+        console.log (`brawlball ${allBattles200Brawlball.length }`)
+        console.log (`gemgrab ${allBattles200Gemgrab.length }`)
+
     }
-    
+    catch (e) {
+        console.log("error in modepopularityHighRank cornFunction", e);
+    }
+}
+exports.modePopularityHighRank2 = async () => {
+    try {
+        let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
+        let allBattles200SSD = await BattleHighRank.find({"event.mode" : "soloShowdown"})
+        console.log (`solo Showdown ${allBattles200SSD.length }`)
+        console.log (`duo Showdown ${allBattles200DSD.length}`)
+    }
+    catch (e) {
+        console.log("error in modepopularityHighRank cornFunction", e);
+    }
+}
+exports.modePopularityHighRank3 = async () => {
+    try {
+        
+        let allBattles200Heist = await BattleHighRank.find({"event.mode" : "heist"})
+        let allBattles200Bounty = await BattleHighRank.find({"event.mode" : "bounty"})  
+        let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+        console.log (`heist  ${allBattles200Heist.length }`) 
+        console.log (`bounty ${allBattles200Bounty.length }`)
+        console.log (`siege ${allBattles200Siege.length }`)
+
+    }
+    catch (e) {
+        console.log("error in modepopularityHighRank cornFunction", e);
+    }
+}
+
+exports.brawlersPickRate = async() => {
+    try {
+        let Bearer = `Bearer ${appkeyHome}`
+
+        let listBrawlers = await axios({
+            method: 'GET',  
+            url: "https://api.brawlstars.com/v1/brawlers",
+            headers: {
+                "Accept": "application/json",
+                'authorization': Bearer
+            }
+        });
+        listBrawlers = listBrawlers.data.items.map(element => {
+            return [element.name, element.id]
+        });
+
+        // for (let i = 0; i < listBrawlers.length; i++) {
+            for (let i = 0; i < 3; i++) {
+
+            let pickTeam1 = await BattleHighRank.find({
+                "battle.teams.0.brawler.id" : listBrawlers[i][1],
+                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}]
+
+            })
+            let pickTeam2 = await BattleHighRank.find({
+                "battle.teams.1.brawler.id" : listBrawlers[i][1],
+                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}]
+            })
+            console.log( `${listBrawlers[i][0]} : ${pickTeam1.length + pickTeam2.length}`) 
+            
+            let winTeam1 = await BattleHighRank.find({
+                "battle.teams.0.brawler.id" : listBrawlers[i][1],
+                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
+                $where: function() {
+                    // return (this.battle.teams[0][0].name == this.battle.starPlayer.name || this.battle.teams[0][1].name == this.battle.starPlayer.name || this.battle.teams[0][2].name == this.battle.starPlayer.name)
+                    if (this.battle.starPlayer) {
+                        return (this.battle.teams[0][0].name == this.battle.starPlayer.name || this.battle.teams[0][1].name == this.battle.starPlayer.name || this.battle.teams[0][2].name == this.battle.starPlayer.name)
+                    }
+                    else return false
+                    
+                }
+
+
+            })
+            console.log( `${pickTeam1.length}`) 
+            console.log("winteam1 -- ", winTeam1.length)
+            // let winTeam2 = await BattleHighRank.find({
+            //     "battle.teams.1.brawler.id" : listBrawlers[i][1],
+            //     $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
+            //     "battle.teams.1.name" : "$battle.starPlayer.name"
+
+            // })
+            // console.log("winteam2 -- ", winTeam2.length)
+
+        }
+
+    }
+    catch (e) {
+        console.log("error in brawlersPicRate cronFunctions", e);
+    }
 }
