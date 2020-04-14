@@ -3,6 +3,7 @@ const BattleHighRank = require('../models/BattlesHighRank');
 const UserLogin = require('../models/UserLogin');
 const User = require('../models/Users');
 const Battle = require('../models/Battles');
+const PickWin200 = require('../models/PickWin200')
 
 const CronJob = require('cron').CronJob;
 
@@ -479,7 +480,7 @@ exports.modePopularityHighRank3 = async () => {
     }
 }
 
-exports.brawlersPickRate = async() => {
+exports.brawlersPickWinRate200 = async() => {
     try {
         let Bearer = `Bearer ${appkeyHome}`
 
@@ -495,13 +496,12 @@ exports.brawlersPickRate = async() => {
             return [element.name, element.id]
         });
 
-        console.log(listBrawlers);
-
-        let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
+        // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
         let _3vs3Battle = await BattleHighRank.find({"event.mode" : {$ne : "soloShowdown"},"event.mode" : {$ne : "duoShowdown"}})
         let sum3vs3 = _3vs3Battle.length;
         _3vs3Battle =[];
 
+        let arrResult = [];
         for (let i = 0; i < listBrawlers.length; i++) {        
             let pickBrawler = await BattleHighRank.find({
                 "event.mode" : {$ne : "soloShowdown"},
@@ -524,8 +524,34 @@ exports.brawlersPickRate = async() => {
             console.log(`${listBrawlers[i][0]}`)
             console.log(`pick   ${ 100 * pickBrawler.length / sum3vs3}`)
             console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
+
+            arrResult.push([listBrawlers[i][0] , 100 * pickBrawler.length / sum3vs3 , 100 * winBrawler.length / pickBrawler.length])
         }
-        
+        arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(arrResult)
+        let d = new Date();
+        var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+        var days = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+        var date2save = days[d.getDate()] + months[d.getMonth()];
+        let result2save = {
+            ranking : arrResult,
+            mode: "global",
+            date : date2save
+        }
+        const ranking = new PickWin200(result2save);
+        let checkToday = await PickWin200.findOne({date : ranking.date, mode: ranking.mode})
+
+        // if (checkToday === null) {
+            await ranking.save();
+            console.log(`ranking saved must verify `);
+            
+        // }
+        // else {
+        //     await PickWin200.findOneAndUpdate({date : ranking.date, mode: ranking.mode}, {$set : ranking}, {upsert : true} )
+        //     console.log(`ranking replaced must verify `);
+
+        // }       
+
         
 
     }
