@@ -369,21 +369,9 @@ exports.victoryShowdown = async () => {
 }
 
 exports.cleaning2MonthHighRank = async () => {
-    // let allBattle2Month_1 = await BattleHighRank.find({ battleTime : {$regex : /^202003/ } })
-    // console.log(allBattle2Month_1.length);
+    
     let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202004/ } })
     console.log(oldestBattleDeletion.deletedCount);
-
-    // let allBattleOneday1 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200301/ } })
-    // let allBattleOneday2 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200302/ } })
-    // let allBattleOneday3 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200303/ } })
-    // let allBattleOneday4 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200304/ } })
-    // let allBattleOneday5 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200305/ } })
-    // let allBattleOneday6 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200306/ } })
-    // let allBattleOneday7 = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^20200307/ } })
-
-    
-
     // for (let i = 0; i < 9; i++) {
     //     let regex = new RegExp(`^2020030${i}`);
     //     let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
@@ -507,63 +495,38 @@ exports.brawlersPickRate = async() => {
             return [element.name, element.id]
         });
 
-        let arrPickBattle = [];
-        for (let i = 0; i < listBrawlers.length; i++) {
-            // for (let i = 0; i < 3; i++) {
+        console.log(listBrawlers);
 
-            let pickTeam1 = await BattleHighRank.find({
-                "battle.teams.0.brawler.id" : listBrawlers[i][1],
-                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}]
+        let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
+        let _3vs3Battle = await BattleHighRank.find({"event.mode" : {$ne : "soloShowdown"},"event.mode" : {$ne : "duoShowdown"}})
+        let sum3vs3 = _3vs3Battle.length;
+        _3vs3Battle =[];
 
+        for (let i = 0; i < listBrawlers.length; i++) {        
+            let pickBrawler = await BattleHighRank.find({
+                "event.mode" : {$ne : "soloShowdown"},
+                "event.mode" : {$ne : "duoShowdown"},
+                "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
             })
-            let pickTeam2 = await BattleHighRank.find({
-                "battle.teams.1.brawler.id" : listBrawlers[i][1],
-                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}]
-            })
-            
-            let winTeam1 = await BattleHighRank.find({
-                "battle.teams.0.brawler.id" : listBrawlers[i][1],
-                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
-                $where: function() {
-                    if (this.battle.starPlayer) {
-                        return (this.battle.teams[0][0].name == this.battle.starPlayer.name || this.battle.teams[0][1].name == this.battle.starPlayer.name || this.battle.teams[0][2].name == this.battle.starPlayer.name)
-                    }
-                    else return false
+
+            pickBrawler = pickBrawler.filter(element => {
+                for (let j = 0; j < 2; j++) {
+                    for (let k = 0; k < 3; k++) {
+                        if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
+                        else continue  
+                    }   
                 }
             })
-            let winTeam2 = await BattleHighRank.find({
-                "battle.teams.1.brawler.id" : listBrawlers[i][1],
-                $nor : [{"event.mode" : "soloShowdown"}, {"event.mode" : "duoShowdown"}],
-                $where: function() {
-                    if (this.battle.starPlayer) {
-                        return (this.battle.teams[1][0].name == this.battle.starPlayer.name || this.battle.teams[1][1].name == this.battle.starPlayer.name || this.battle.teams[1][2].name == this.battle.starPlayer.name)
-                    }
-                    else return false
-                }
-            })
-            arrPickBattle.push( [(pickTeam1.length + pickTeam2.length), (winTeam1.length + winTeam2.length) * 100 /   (pickTeam1.length + pickTeam2.length) , listBrawlers[i][0]]);
-
-            console.log("****************")
-            console.log( `pick : ${listBrawlers[i][0]} : ${pickTeam1.length + pickTeam2.length}`) 
-            console.log(`success : ${(winTeam1.length + winTeam2.length) * 100 /   (pickTeam1.length + pickTeam2.length)}`)
-
+            let winBrawler = pickBrawler.filter(element => {
+                return (element.battle.result === "victory")
+            });
+            console.log("***************************************************")
+            console.log(`${listBrawlers[i][0]}`)
+            console.log(`pick   ${ 100 * pickBrawler.length / sum3vs3}`)
+            console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
         }
-        console.log("ddddddddddddddddddddddddddddd")
-        console.log(arrPickBattle.length)
-        console.log(arrPickBattle)
-
-        let sum = 0;
-        for (let i = 0; i < arrPickBattle.length; i++) {
-            sum += arrPickBattle[i][0];
-            
-        }
-        console.log("sum :", sum);
-        for (let i = 0; i < arrPickBattle.length; i++) {
-            console.log("________")
-            console.log( ` ${arrPickBattle[i][2]}`)
-            console.log( `pick   ${arrPickBattle[i][0] * 100 /sum}`) 
-            console.log(`success :  ${arrPickBattle[i][1]}`)            
-        }
+        
+        
 
     }
     catch (e) {
