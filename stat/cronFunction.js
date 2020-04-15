@@ -480,7 +480,93 @@ exports.modePopularityHighRank3 = async () => {
     }
 }
 
-exports.brawlersPickWinRate200 = async() => {
+exports.brawlersPickWinRate200duo = async() => {
+    try {
+        let Bearer = `Bearer ${appkeyHome}`
+
+        let listBrawlers = await axios({
+            method: 'GET',  
+            url: "https://api.brawlstars.com/v1/brawlers",
+            headers: {
+                "Accept": "application/json",
+                'authorization': Bearer
+            }
+        });
+        listBrawlers = listBrawlers.data.items.map(element => {
+            return [element.name, element.id]
+        });
+
+        // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
+        let duoBattle = await BattleHighRank.find({"event.mode" : "duoShowdown"})
+        let sumDuo = duoBattle.length;
+        duoBattle =[];
+        console.log("SUMDUOOOO", sumDuo)
+
+        let arrResult = [];
+        for (let i = 0; i < listBrawlers.length; i++) {        
+            let pickBrawler = await BattleHighRank.find({
+                "event.mode" : "duoShowdown",
+                "battle.type" : "ranked" ,
+                // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "BROCK"}}}
+                "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
+            })
+            console.log(pickBrawler.length)
+            
+
+            if (pickBrawler) {
+                pickBrawler = pickBrawler.filter(element => {
+                    for (let j = 0; j < 5; j++) {
+                        for (let k = 0; k < 2; k++) {
+                            if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
+                            // if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === "BROCK")) return true
+                            else continue  
+                        }   
+                    }
+                })
+                let winBrawler1 = pickBrawler.filter(element => {
+                    return (element.battle.rank === 1)
+                });
+                let winBrawler2 = pickBrawler.filter(element => {
+                    return (element.battle.rank === 2)
+                });
+                console.log("***************************************************")
+                console.log(`${listBrawlers[i][0]}`)
+                console.log(` ${pickBrawler.length}`)
+
+                console.log(`pick   ${ 100 * pickBrawler.length / sumDuo}`)
+                console.log(`first   ------------------------  ${100 * winBrawler1.length / pickBrawler.length}`)
+                console.log(`second   ------------------------  ${100 * winBrawler2.length / pickBrawler.length}`)
+                console.log(`win   ------------------------  ${100 * (winBrawler1.length + winBrawler2.length) / pickBrawler.length}`)
+    
+    
+                arrResult.push([listBrawlers[i][0] , 100 * pickBrawler.length / sumDuo , 100 * (winBrawler1.length + winBrawler2.length) / pickBrawler.length])
+                // arrResult.push(["BROCK" , 100 * pickBrawler.length / sumDuo , 100 * (winBrawler1.length + winBrawler2.length) / pickBrawler.length])
+            }
+            
+        }
+        arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(arrResult)
+        let d = new Date();
+        var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+        var days = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+        var date2save = days[d.getDate() - 1 ] + months[d.getMonth()];
+        let result2save = {
+            ranking : arrResult,
+            mode: "duoShowdown",
+            date : date2save
+        }
+        const ranking = new PickWin200(result2save);
+        await PickWin200.findOneAndDelete({date : ranking.date, mode: ranking.mode})
+        await ranking.save();
+        console.log(`ranking saved must verify `);
+
+    }
+    catch (e) {
+        console.log("error in brawlersPickWinRate200duo cronFunctions", e);
+    }
+}
+
+exports.brawlersPickWinRate200glob = async() => {
     try {
         let Bearer = `Bearer ${appkeyHome}`
 
@@ -506,6 +592,7 @@ exports.brawlersPickWinRate200 = async() => {
             let pickBrawler = await BattleHighRank.find({
                 "event.mode" : {$ne : "soloShowdown"},
                 "event.mode" : {$ne : "duoShowdown"},
+                "battle.type" : "ranked" ,
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
             })
 
@@ -532,30 +619,19 @@ exports.brawlersPickWinRate200 = async() => {
         let d = new Date();
         var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
         var days = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
-        var date2save = days[d.getDate()] + months[d.getMonth()];
+        var date2save = days[d.getDate() - 1 ] + months[d.getMonth()];
         let result2save = {
             ranking : arrResult,
             mode: "global",
             date : date2save
         }
         const ranking = new PickWin200(result2save);
-        let checkToday = await PickWin200.findOne({date : ranking.date, mode: ranking.mode})
-
-        // if (checkToday === null) {
-            await ranking.save();
-            console.log(`ranking saved must verify `);
-            
-        // }
-        // else {
-        //     await PickWin200.findOneAndUpdate({date : ranking.date, mode: ranking.mode}, {$set : ranking}, {upsert : true} )
-        //     console.log(`ranking replaced must verify `);
-
-        // }       
-
-        
+        await PickWin200.findOneAndDelete({date : ranking.date, mode: ranking.mode})
+        await ranking.save();
+        console.log(`ranking saved must verify `);
 
     }
     catch (e) {
-        console.log("error in brawlersPicRate cronFunctions", e);
+        console.log("error in brawlersPickWinRate200glob cronFunctions", e);
     }
 }
