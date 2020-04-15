@@ -356,16 +356,18 @@ exports.victoryShowdown = async () => {
     // let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
     let allBattleUMI = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown"} );
     let duoVictory = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown", "battle.rank" : 1 } );
-    // let allBattles200BB = await BattleHighRank.find({"event.mode" : "brawlBall"})
-    // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+    let duoVictory2 = await Battle.find({ "battle.teams" : { "$elemMatch": {"$elemMatch" : { "name" : "umi no tamashi" }}}, "event.mode": "duoShowdown", "battle.rank" : 2 } );
+    console.log("---- duo")
     console.log(allBattleUMI.length);
-    console.log(duoVictory.length);
+    console.log(100 * duoVictory.length / allBattleUMI.length);
+    console.log(100 * (duoVictory.length + duoVictory2.length) / allBattleUMI.length);
+
 
     let allSoloUMI = await Battle.find({ "battle.players.name" : "umi no tamashi" , "event.mode": "soloShowdown"} );
     let allSoloVictoryUMI = await Battle.find({ "battle.players.name" : "umi no tamashi" , "event.mode": "soloShowdown", "battle.rank" :1 } );
-    console.log("----")
+    console.log("---- solo")
     console.log(allSoloUMI.length);
-    console.log(allSoloVictoryUMI.length);
+    console.log(100 * allSoloVictoryUMI.length / allSoloUMI.length);
 
 }
 
@@ -376,12 +378,10 @@ exports.cleaning2MonthHighRank = async () => {
     // for (let i = 0; i < 9; i++) {
     //     let regex = new RegExp(`^2020030${i}`);
     //     let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
-    //     console.log(allBattleOnedayiii.deletedCount)
     // }
     // for (let i = 10; i < 15; i++) {
     //     let regex = new RegExp(`^202003${i}`);
     //     let allBattleOnedayiii = await BattleHighRank.deleteMany({ "battleTime" : {$regex : regex } });
-    //     console.log(allBattleOnedayiii.deletedCount)
     // }
 
 }
@@ -497,7 +497,7 @@ exports.brawlersPickWinRate200duo = async() => {
         });
 
         // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
-        let duoBattle = await BattleHighRank.find({"event.mode" : "duoShowdown"})
+        let duoBattle = await BattleHighRank.find({"event.mode" : "duoShowdown", "battle.type" : "ranked"})
         let sumDuo = duoBattle.length;
         duoBattle =[];
         console.log("SUMDUOOOO", sumDuo)
@@ -583,7 +583,7 @@ exports.brawlersPickWinRate200glob = async() => {
         });
 
         // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
-        let _3vs3Battle = await BattleHighRank.find({"event.mode" : {$ne : "soloShowdown"},"event.mode" : {$ne : "duoShowdown"}})
+        let _3vs3Battle = await BattleHighRank.find({"event.mode" : {$ne : "soloShowdown"},"event.mode" : {$ne : "duoShowdown"}, "battle.type" : "ranked"})
         let sum3vs3 = _3vs3Battle.length;
         _3vs3Battle =[];
 
@@ -634,4 +634,93 @@ exports.brawlersPickWinRate200glob = async() => {
     catch (e) {
         console.log("error in brawlersPickWinRate200glob cronFunctions", e);
     }
+}
+
+let pickWin200Param = async (param) => {
+    console.log(`:::::::::::::::: ${param}` )
+
+    try {
+        let Bearer = `Bearer ${appkeyHome}`
+
+        let listBrawlers = await axios({
+            method: 'GET',  
+            url: "https://api.brawlstars.com/v1/brawlers",
+            headers: {
+                "Accept": "application/json",
+                'authorization': Bearer
+            }
+        });
+        listBrawlers = listBrawlers.data.items.map(element => {
+            return [element.name, element.id]
+        });
+
+        // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
+        let battleTotal = await BattleHighRank.find({"event.mode" : param, "battle.type" : "ranked"})
+        let sumBattle = battleTotal.length;
+        battleTotal =[];
+
+        let arrResult = [];
+        for (let i = 0; i < listBrawlers.length; i++) {        
+            let pickBrawler = await BattleHighRank.find({
+                "event.mode" : param,
+                "battle.type" : "ranked" ,
+                "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
+            })
+
+            pickBrawler = pickBrawler.filter(element => {
+                for (let j = 0; j < 2; j++) {
+                    for (let k = 0; k < 3; k++) {
+                        if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
+                        else continue  
+                    }   
+                }
+            })
+            let winBrawler = pickBrawler.filter(element => {
+                return (element.battle.result === "victory")
+            });
+            console.log("***************************************************")
+            console.log(`${listBrawlers[i][0]}`)
+            console.log(`${pickBrawler.length}`)
+
+            console.log(`pick   ${ 100 * pickBrawler.length / sumBattle}`)
+            console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
+
+            arrResult.push([listBrawlers[i][0] , 100 * pickBrawler.length / sumBattle , 100 * winBrawler.length / pickBrawler.length])
+        }
+        arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(arrResult)
+        let d = new Date();
+        var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+        var days = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+        var date2save = days[d.getDate() - 1 ] + months[d.getMonth()];
+        let result2save = {
+            ranking : arrResult,
+            mode: param,
+            date : date2save
+        }
+        const ranking = new PickWin200(result2save);
+        await PickWin200.findOneAndDelete({date : ranking.date, mode: ranking.mode})
+        await ranking.save();
+        console.log(`ranking saved must verify `);
+
+    }
+    catch (e) {
+        console.log("error in brawlersPickWinRate200glob cronFunctions", e);
+    }
+}
+
+exports.brawlersPickWinRate200gemGrab = async() => {
+    pickWin200Param("gemGrab")
+}
+
+exports.brawlersPickWinRate200siege = async() => {
+    pickWin200Param("siege")
+}
+
+exports.brawlersPickWinRate200heist = async() => {
+    pickWin200Param("heist")
+}
+
+exports.brawlersPickWinRate200bounty = async() => {
+    pickWin200Param("bounty")
 }
