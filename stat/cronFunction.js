@@ -545,6 +545,8 @@ exports.brawlersPickWinRate200duo = async() => {
             
         }
         arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(`:::::::::::::::: DUO SHOWDOWN` )
+
         console.log(arrResult)
         let d = new Date();
         var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
@@ -588,8 +590,9 @@ exports.brawlersPickWinRate200glob = async() => {
         _3vs3Battle =[];
 
         let arrResult = [];
-        for (let i = 0; i < listBrawlers.length; i++) {        
-            let pickBrawler = await BattleHighRank.find({
+        for (let i = 0; i < listBrawlers.length; i++) {
+            let pickBrawler = []        
+            pickBrawler = await BattleHighRank.find({
                 "event.mode" : {$ne : "soloShowdown"},
                 "event.mode" : {$ne : "duoShowdown"},
                 "battle.type" : "ranked" ,
@@ -609,12 +612,14 @@ exports.brawlersPickWinRate200glob = async() => {
             });
             console.log("***************************************************")
             console.log(`${listBrawlers[i][0]}`)
+            console.log(`${pickBrawler.length}`)
             console.log(`pick   ${ 100 * pickBrawler.length / sum3vs3}`)
             console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
 
-            arrResult.push([listBrawlers[i][0] , 100 * pickBrawler.length / sum3vs3 , 100 * winBrawler.length / pickBrawler.length])
+            arrResult.push([listBrawlers[i][0] , pickBrawler.length ? 100 * pickBrawler.length / sum3vs3 : 0, pickBrawler.length ? 100 * winBrawler.length / pickBrawler.length : 0])
         }
         arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(`:::::::::::::::: GLOBAL 3VS3` )
         console.log(arrResult)
         let d = new Date();
         var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
@@ -660,8 +665,9 @@ let pickWin200Param = async (param) => {
         battleTotal =[];
 
         let arrResult = [];
-        for (let i = 0; i < listBrawlers.length; i++) {        
-            let pickBrawler = await BattleHighRank.find({
+        for (let i = 0; i < listBrawlers.length; i++) {  
+            let pickBrawler = [];      
+            pickBrawler = await BattleHighRank.find({
                 "event.mode" : param,
                 "battle.type" : "ranked" ,
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
@@ -685,9 +691,10 @@ let pickWin200Param = async (param) => {
             console.log(`pick   ${ 100 * pickBrawler.length / sumBattle}`)
             console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
 
-            arrResult.push([listBrawlers[i][0] , 100 * pickBrawler.length / sumBattle , 100 * winBrawler.length / pickBrawler.length])
+            arrResult.push([listBrawlers[i][0] , pickBrawler.length ? 100 * pickBrawler.length / sumBattle : 0, pickBrawler.length ? 100 *  winBrawler.length / pickBrawler.length : 0 ])
         }
         arrResult.sort(function(a, b){return b[2]-a[2]});
+        console.log(`:::::::::::::::: ${param}` )
         console.log(arrResult)
         let d = new Date();
         var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
@@ -723,4 +730,8 @@ exports.brawlersPickWinRate200heist = async() => {
 
 exports.brawlersPickWinRate200bounty = async() => {
     pickWin200Param("bounty")
+}
+
+exports.brawlersPickWinRate200brawlBall = async() => {
+    pickWin200Param("brawlBall")
 }
