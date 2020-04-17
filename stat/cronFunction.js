@@ -386,6 +386,83 @@ exports.cleaning2MonthHighRank = async () => {
 
 }
 
+exports.cleaningLowLevelHighRank = async () => {
+    
+    let battleLowLevelDeletion = await BattleHighRank.deleteMany({ 
+        "event.mode" : {$ne : "soloShowdown"},
+        "event.mode" : {$ne : "duoShowdown"},
+        "battle.type" : "ranked" ,
+        "battle.teams.0.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.0.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.0.2.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.1.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.1.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.1.2.brawler.trophies" :  {$lt: 500 },
+        "battle.trophyChange" : {$lte : 10},
+        "battle.teams.0.0.brawler.power" : {$lte : 9},
+        "battle.teams.0.1.brawler.power" : {$lte : 9},
+        "battle.teams.0.2.brawler.power" : {$lte : 9},
+        "battle.teams.1.0.brawler.power" : {$lte : 9},
+        "battle.teams.1.1.brawler.power" : {$lte : 9},
+        "battle.teams.1.2.brawler.power" : {$lte : 9}
+    })
+    console.log(battleLowLevelDeletion.deletedCount);
+
+    let battleLowLevelDeletionSD = await BattleHighRank.deleteMany({ 
+        "event.mode" : "duoShowdown",
+        "battle.type" : "ranked" ,
+        "battle.teams.0.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.0.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.1.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.1.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.2.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.2.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.3.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.3.1.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.4.0.brawler.trophies" :  {$lt: 500 },
+        "battle.teams.4.1.brawler.trophies" :  {$lt: 500 },
+        "battle.trophyChange" : {$lte : 10},
+        "battle.teams.0.0.brawler.power" : {$lte : 9},
+        "battle.teams.0.1.brawler.power" : {$lte : 9},
+        "battle.teams.1.0.brawler.power" : {$lte : 9},
+        "battle.teams.1.1.brawler.power" : {$lte : 9},
+        "battle.teams.2.0.brawler.power" : {$lte : 9},
+        "battle.teams.2.1.brawler.power" : {$lte : 9},
+        "battle.teams.3.0.brawler.power" : {$lte : 9},
+        "battle.teams.3.1.brawler.power" : {$lte : 9},
+        "battle.teams.4.0.brawler.power" : {$lte : 9},
+        "battle.teams.4.1.brawler.power" : {$lte : 9},
+    })
+    console.log(battleLowLevelDeletionSD.deletedCount);
+
+    let battleLowLevelDeletionSDSolo = await BattleHighRank.deleteMany({ 
+        "event.mode" : "soloShowdown",
+        "battle.type" : "ranked" ,
+        "battle.players.0.brawler.trophies" :  {$lt: 500 },
+        "battle.players.1.brawler.trophies" :  {$lt: 500 },
+        "battle.players.2.brawler.trophies" :  {$lt: 500 },
+        "battle.players.3.brawler.trophies" :  {$lt: 500 },
+        "battle.players.4.brawler.trophies" :  {$lt: 500 },
+        "battle.players.5.brawler.trophies" :  {$lt: 500 },
+        "battle.players.6.brawler.trophies" :  {$lt: 500 },
+        "battle.players.7.brawler.trophies" :  {$lt: 500 },
+        "battle.players.8.brawler.trophies" :  {$lt: 500 },
+        "battle.players.9.brawler.trophies" :  {$lt: 500 },
+        "battle.trophyChange" : {$lte : 10},
+        "battle.players.0.brawler.power" : {$lte : 9},
+        "battle.players.1.brawler.power" : {$lte : 9},
+        "battle.players.2.brawler.power" : {$lte : 9},
+        "battle.players.3.brawler.power" : {$lte : 9},
+        "battle.players.4.brawler.power" : {$lte : 9},
+        "battle.players.5.brawler.power" : {$lte : 9},
+        "battle.players.6.brawler.power" : {$lte : 9},
+        "battle.players.7.brawler.power" : {$lte : 9},
+        "battle.players.8.brawler.power" : {$lte : 9},
+        "battle.players.9.brawler.power" : {$lte : 9},
+    })
+    console.log(battleLowLevelDeletionSDSolo.deletedCount); 
+}
+
 exports.brawlersRanking = async () => {
 
     try {
