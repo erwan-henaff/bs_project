@@ -17,6 +17,8 @@ exports.addBattlesHighRank = async () => {
     // from the 200 players, we cut the group in 8 slices of 25.
     // it avoids doing 200 request at once on the server. 
     try {
+        console.log("all done 1 ***********************************all done")
+
         let whichKey = "appkeyHome"  
         let Bearer = "";
         if (whichKey=== "appkeyDCI") Bearer = `Bearer ${appkeyDCI}`
@@ -34,6 +36,7 @@ exports.addBattlesHighRank = async () => {
                 'authorization': Bearer
             }
         });
+        console.log("all done 2 ***********************************all done")
 
         ////////////////// extract the player tags into an array 
         let getListBestPlayers1 = getListBestPlayers.data.items.map(el => {
@@ -42,6 +45,8 @@ exports.addBattlesHighRank = async () => {
         /////// cut the array in 8 smaller arrays to avoid too many api calls at once
         let listTrunk = [];
         for (let i = 0; i < 8; i++) {
+            console.log("all done i ***********************************all done", i)
+
             listTrunk[i] = getListBestPlayers1.slice(i*25, (i+1)*25)  
         
             ////// get an array of 25 battlelogs promised (with 25 battles each);
@@ -106,7 +111,6 @@ exports.addBattlesHighRank = async () => {
             ///// above the setTimeout function is triggered 10 seconds * i  inside the for loop, 
             ///// so 8 setTimeout or launched
         }   
-        console.log("all done ***********************************all done")
     } catch (e) {
         console.log("error occured in battlehighrank cronfunction call (api-key?)")
     }
@@ -461,6 +465,11 @@ exports.cleaningLowLevelHighRank = async () => {
         "battle.players.9.brawler.power" : {$lte : 9},
     })
     console.log(battleLowLevelDeletionSDSolo.deletedCount); 
+
+    let battleFriendly = await BattleHighRank.deleteMany({ 
+        "battle.type" : "friendly"
+    })
+    console.log(battleFriendly.deletedCount);
 }
 
 exports.brawlersRanking = async () => {
@@ -519,38 +528,56 @@ exports.brawlersRanking = async () => {
 exports.modePopularityHighRank = async () => {
     try {
         let allBattles200Brawlball = await BattleHighRank.find({"event.mode" : "brawlBall"})
-        let allBattles200Gemgrab = await BattleHighRank.find({"event.mode" : "gemGrab"})
-        // let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+        let allBattles200BrawlballWin = await BattleHighRank.find({
+            "event.mode" : "brawlBall",
+            "battle.type" : "ranked",
+            "battle.result" : "victory"})
 
-        console.log (`brawlball ${allBattles200Brawlball.length }`)
-        console.log (`gemgrab ${allBattles200Gemgrab.length }`)
+        let allBattles200Gemgrab = await BattleHighRank.find({"event.mode" : "gemGrab"})
+        let allBattles200GemgrabWin = await BattleHighRank.find({
+            "event.mode" : "gemGrab", 
+            "battle.type" : "ranked",
+            "battle.result" : "victory"})
+
+
+        console.log (`brawlball ${allBattles200Brawlball.length } --- ${100 * allBattles200BrawlballWin.length / allBattles200Brawlball.length}`)
+        console.log (`gemgrab ${allBattles200Gemgrab.length } --- ${100 * allBattles200GemgrabWin.length / allBattles200Gemgrab.length}`)
 
     }
     catch (e) {
         console.log("error in modepopularityHighRank cornFunction", e);
     }
 }
+
 exports.modePopularityHighRank2 = async () => {
+    try {
+        
+        let allBattles200Heist = await BattleHighRank.find({"event.mode" : "heist"})
+        let allBattles200HeistWin = await BattleHighRank.find({"event.mode" : "heist", "battle.result" : "victory"})
+
+        let allBattles200Bounty = await BattleHighRank.find({"event.mode" : "bounty"}) 
+        let allBattles200BountyWin = await BattleHighRank.find({"event.mode" : "bounty", "battle.result" : "victory"})
+ 
+        let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
+        let allBattles200SiegeWin = await BattleHighRank.find({"event.mode" : "siege", "battle.result" : "victory"})
+
+        console.log (`heist ${allBattles200Heist.length } --- ${100 * allBattles200HeistWin.length / allBattles200Heist.length}`)
+        
+        console.log (`bounty ${allBattles200Bounty.length } --- ${100 * allBattles200BountyWin.length / allBattles200Bounty.length}`);
+        
+        console.log (`siege ${allBattles200Siege.length } --- ${100 * allBattles200SiegeWin.length / allBattles200Siege.length}`);
+    }
+    catch (e) {
+        console.log("error in modepopularityHighRank cornFunction", e);
+    }
+}
+
+exports.modePopularityHighRank3 = async () => {
     try {
         let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
         let allBattles200SSD = await BattleHighRank.find({"event.mode" : "soloShowdown"})
         console.log (`solo Showdown ${allBattles200SSD.length }`)
         console.log (`duo Showdown ${allBattles200DSD.length}`)
-    }
-    catch (e) {
-        console.log("error in modepopularityHighRank cornFunction", e);
-    }
-}
-exports.modePopularityHighRank3 = async () => {
-    try {
-        
-        let allBattles200Heist = await BattleHighRank.find({"event.mode" : "heist"})
-        let allBattles200Bounty = await BattleHighRank.find({"event.mode" : "bounty"})  
-        let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
-        console.log (`heist  ${allBattles200Heist.length }`) 
-        console.log (`bounty ${allBattles200Bounty.length }`)
-        console.log (`siege ${allBattles200Siege.length }`)
-
     }
     catch (e) {
         console.log("error in modepopularityHighRank cornFunction", e);
@@ -587,9 +614,6 @@ exports.brawlersPickWinRate200duo = async() => {
                 // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "BROCK"}}}
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
             })
-            console.log(pickBrawler.length)
-            
-
             if (pickBrawler) {
                 pickBrawler = pickBrawler.filter(element => {
                     for (let j = 0; j < 5; j++) {
@@ -662,7 +686,10 @@ exports.brawlersPickWinRate200glob = async() => {
         });
 
         // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
-        let _3vs3Battle = await BattleHighRank.find({"event.mode" : {$ne : "soloShowdown"},"event.mode" : {$ne : "duoShowdown"}, "battle.type" : "ranked"})
+        let _3vs3Battle = await BattleHighRank.find({
+            "event.mode" : {$ne : "soloShowdown"},
+            "event.mode" : {$ne : "duoShowdown"}, 
+            "battle.type" : "ranked"})
         let sum3vs3 = _3vs3Battle.length;
         _3vs3Battle =[];
 
@@ -812,3 +839,103 @@ exports.brawlersPickWinRate200bounty = async() => {
 exports.brawlersPickWinRate200brawlBall = async() => {
     pickWin200Param("brawlBall")
 }
+
+exports.brawlerRanking_200BestPlayers = async () => {
+
+    // from the 200 players, we cut the group in 8 slices of 25.
+    // it avoids doing 200 request at once on the server. 
+    try {
+
+        let whichKey = "appkeyHome"  
+        let Bearer = "";
+        if (whichKey=== "appkeyDCI") Bearer = `Bearer ${appkeyDCI}`
+        else if (whichKey=== "appkeyHome") Bearer = `Bearer ${appkeyHome}`
+
+        let url = "https://api.brawlstars.com/v1/rankings/global/players";
+
+        const getListBestPlayers = await axios({
+            method: 'GET',  
+            url: url,
+            headers: {
+                "Accept": "application/json",
+                'authorization': Bearer
+            }
+        });
+        ////////////////// extract the player tags into an array 
+        getListBestPlayers1 = getListBestPlayers.data.items.map(el => {
+            return el.tag.slice(1);
+        })
+
+        let allInfos200Player = [];
+        let listTrunk = [];
+        
+        for (let i = 0; i < 8; i++) {
+            listTrunk[i] = getListBestPlayers1.slice(i*25, (i+1)*25)    
+        
+            setTimeout( async () => {
+
+                let listTrunkPlayerInfo = await Promise.all(
+                    // listTrunk[i].map(async el =>{
+                    listTrunk[i].map(async el =>{
+
+                        let url = `https://api.brawlstars.com/v1/players/%23${el}`;
+                        let resQuery = await axios({
+                            method: 'GET',  
+                            url: url,
+                            headers: {
+                                "Accept": "application/json",
+                                'authorization': Bearer
+                            }
+                        });
+                        return resQuery.data
+                    })
+                )
+                allInfos200Player = allInfos200Player.concat(listTrunkPlayerInfo)
+            }, 10000*i)
+        } 
+        //// this function is postponed to be executed after all APIs call.
+        setTimeout ( async ()=>{
+            console.log(" OWARIIIII   --------------------------")
+            console.log(allInfos200Player.length)
+            let arrAverageBrawler = [];
+
+            let numberOfBrawlers = allInfos200Player[0].brawlers.length;
+
+            for (let index1 = 0; index1 < numberOfBrawlers; index1++) {
+                let sumTrophies = allInfos200Player.reduce( (acc,cur) => {
+                    if( cur.brawlers[index1]) {
+                        acc.value += cur.brawlers[index1].trophies
+                        acc.count ++
+                        acc.name = cur.brawlers[index1].name
+                    }                   
+                    return acc
+                }, { value:0, count:0, name: "" })
+                arrAverageBrawler.push([ sumTrophies.name,  sumTrophies.value/sumTrophies.count, 0])    
+            }
+            console.log("blo")
+
+            arrAverageBrawler.sort(function(a, b){return b[1]-a[1]});
+            console.log("bla")
+            console.log(arrAverageBrawler)
+
+            let d = new Date();
+            const months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+            const days = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+            const date2save = days[d.getDate() - 1 ] + months[d.getMonth()];
+            const result2save = {
+                ranking : arrAverageBrawler,
+                mode: "brawler average 200 Best",
+                date : date2save
+            }
+            const ranking = new PickWin200(result2save);
+            await PickWin200.findOneAndDelete({date : ranking.date, mode: ranking.mode})
+            await ranking.save();
+            console.log(`average saved must verify `);
+                
+        },180000)
+
+        
+    } catch (e) {
+        console.log("error occured in battlehighrank cronfunction call (api-key?)", e)
+    }
+};

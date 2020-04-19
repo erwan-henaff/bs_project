@@ -15,7 +15,7 @@ const userLoginRouter = require('./routes/userlogin');
 
 
 ///////////////////////////   cronjob stat 
-const {task001, task002, task003, task004, task004b, task005, task006, task007, task008, task009, task010, task011, task012, task013, task014, task015} = require('./stat/stat');
+const {task001, task002, task003, task004, task004b, task005, task005b, task006, task007, task008, task009, task010, task011, task012, task013, task014, task015} = require('./stat/stat');
 // let taskArray = [];
 task001.start();
 task002.start();
@@ -24,6 +24,8 @@ task004.start();
 task004b.start();
 
 task005.start();
+task005b.start();
+
 task006.start();
 task007.start();
 task008.start();
