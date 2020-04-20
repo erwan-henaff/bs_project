@@ -685,13 +685,16 @@ exports.brawlersPickWinRate200glob = async() => {
             return [element.name, element.id]
         });
 
-        // let arrMode = ["gemGrab", "brawlBall", "heist", "siege"];
-        let _3vs3Battle = await BattleHighRank.find({
-            "event.mode" : {$ne : "soloShowdown"},
-            "event.mode" : {$ne : "duoShowdown"}, 
+        let no_3vs3Battle = await BattleHighRank.find({
+            "event.mode" : "soloShowdown",
+            "event.mode" : "duoShowdown", 
             "battle.type" : "ranked"})
-        let sum3vs3 = _3vs3Battle.length;
-        _3vs3Battle =[];
+        let total = await BattleHighRank.countDocuments({"battle.type" : "ranked"});
+        console.log("showdown", no_3vs3Battle.length)
+        console.log("total", total)
+        console.log(no_3vs3Battle.length * 100 / total)
+
+        let sum3vs3 = total - no_3vs3Battle.length;
 
         let arrResult = [];
         for (let i = 0; i < listBrawlers.length; i++) {
@@ -701,12 +704,16 @@ exports.brawlersPickWinRate200glob = async() => {
                 "event.mode" : {$ne : "duoShowdown"},
                 "battle.type" : "ranked" ,
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
+                // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "COLT"}}}
+
             })
 
             pickBrawler = pickBrawler.filter(element => {
                 for (let j = 0; j < 2; j++) {
                     for (let k = 0; k < 3; k++) {
                         if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
+                        // if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === "COLT")) return true
+
                         else continue  
                     }   
                 }
