@@ -36,7 +36,6 @@ exports.addBattlesHighRank = async () => {
                 'authorization': Bearer
             }
         });
-        console.log("all done 2 ***********************************all done")
 
         ////////////////// extract the player tags into an array 
         let getListBestPlayers1 = getListBestPlayers.data.items.map(el => {
@@ -45,10 +44,8 @@ exports.addBattlesHighRank = async () => {
         /////// cut the array in 8 smaller arrays to avoid too many api calls at once
         let listTrunk = [];
         for (let i = 0; i < 8; i++) {
-            console.log("all done i ***********************************all done", i)
 
             listTrunk[i] = getListBestPlayers1.slice(i*25, (i+1)*25)  
-        
             ////// get an array of 25 battlelogs promised (with 25 battles each);
             setTimeout( async () => {
                 let listTrunkBattleLog = await Promise.all(
@@ -68,10 +65,7 @@ exports.addBattlesHighRank = async () => {
                         return resQuery.data.items
                     })
                 )
-                // let listTrunkBattleLogItems = listTrunkBattleLog.map(el=> {
-                //     el[1].data.items.playerTag = el[0]
-                //     return el[1].data.items
-                // })
+                
                 ////// transform the array of 25 battlogs in one array of 25 * 25 battles 
                 let arrOf25PlayersResult = listTrunkBattleLog.reduce((acc, curVal)=>{
                     return acc.concat(curVal)
@@ -108,7 +102,7 @@ exports.addBattlesHighRank = async () => {
                 console.log(`************inside the ${i} setTimeout loop trigger = true `)
 
             }, 20000*i)
-            ///// above the setTimeout function is triggered 10 seconds * i  inside the for loop, 
+            ///// above the setTimeout function is triggered 20 seconds * i  inside the for loop, 
             ///// so 8 setTimeout or launched
         }   
     } catch (e) {
@@ -630,6 +624,15 @@ exports.brawlersPickWinRate200duo = async() => {
                 let winBrawler2 = pickBrawler.filter(element => {
                     return (element.battle.rank === 2)
                 });
+                let winBrawler3 = pickBrawler.filter(element => {
+                    return (element.battle.rank === 3)
+                });
+                let winBrawler4 = pickBrawler.filter(element => {
+                    return (element.battle.rank === 4)
+                });
+                let winBrawler5 = pickBrawler.filter(element => {
+                    return (element.battle.rank === 5)
+                });
                 console.log("***************************************************")
                 console.log(`${listBrawlers[i][0]}`)
                 console.log(` ${pickBrawler.length}`)
@@ -637,6 +640,12 @@ exports.brawlersPickWinRate200duo = async() => {
                 console.log(`pick   ${ 100 * pickBrawler.length / sumDuo}`)
                 console.log(`first   ------------------------  ${100 * winBrawler1.length / pickBrawler.length}`)
                 console.log(`second   ------------------------  ${100 * winBrawler2.length / pickBrawler.length}`)
+                console.log(`third   ------------------------  ${100 * winBrawler3.length / pickBrawler.length}`)
+                console.log(`fourth   ------------------------  ${100 * winBrawler4.length / pickBrawler.length}`)
+                console.log(`fifth   ------------------------  ${100 * winBrawler5.length / pickBrawler.length}`)
+                
+                
+
                 console.log(`win   ------------------------  ${100 * (winBrawler1.length + winBrawler2.length) / pickBrawler.length}`)
     
     
@@ -695,20 +704,23 @@ exports.brawlersPickWinRate200glob = async() => {
         console.log(no_3vs3Battle.length * 100 / total)
 
         let sum3vs3 = total - no_3vs3Battle.length;
+        no_3vs3Battle = [];
 
         let arrResult = [];
         for (let i = 0; i < listBrawlers.length; i++) {
-            let pickBrawler = []        
-            pickBrawler = await BattleHighRank.find({
-                "event.mode" : {$ne : "soloShowdown"},
-                "event.mode" : {$ne : "duoShowdown"},
+            let pickBrawler1 = []   
+            let pickBrawler2 = []        
+     
+            pickBrawler1 = await BattleHighRank.find({
+                // "event.mode" : {$ne : "soloShowdown"},
+                // "event.mode" : {$ne : "duoShowdown"},
+                "event.mode" : "brawlBall",
                 "battle.type" : "ranked" ,
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
                 // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "COLT"}}}
 
             })
-
-            pickBrawler = pickBrawler.filter(element => {
+            pickBrawler1 = pickBrawler1.filter(element => {
                 for (let j = 0; j < 2; j++) {
                     for (let k = 0; k < 3; k++) {
                         if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
@@ -718,16 +730,50 @@ exports.brawlersPickWinRate200glob = async() => {
                     }   
                 }
             })
-            let winBrawler = pickBrawler.filter(element => {
+            let winBrawler1 = pickBrawler1.filter(element => {
                 return (element.battle.result === "victory")
             });
+
+            let pickBrawler = pickBrawler1.length
+            let winBrawler = winBrawler1.length
+        
+            /// I cut the process in 2 asynchronous queries because of memory capacity 
+            pickBrawler1 = [];
+
+            pickBrawler1 = await BattleHighRank.find({
+                
+                "event.mode" : {$in : ["siege", "heist", "gemGrab", "bounty"]},
+                "battle.type" : "ranked" ,
+                "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
+                // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "COLT"}}}
+
+            })
+
+            
+            pickBrawler1 = pickBrawler1.filter(element => {
+                for (let j = 0; j < 2; j++) {
+                    for (let k = 0; k < 3; k++) {
+                        if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === listBrawlers[i][0])) return true
+                        // if ( (element.battle.teams[j][k].tag.slice(1) === element.playerTag) && (element.battle.teams[j][k].brawler.name === "COLT")) return true
+
+                        else continue  
+                    }   
+                }
+            })
+            
+            let winBrawler2 = pickBrawler1.filter(element => {
+                return (element.battle.result === "victory")
+            });
+            pickBrawler += pickBrawler1.length
+            winBrawler += winBrawler2.length
+
             console.log("***************************************************")
             console.log(`${listBrawlers[i][0]}`)
-            console.log(`${pickBrawler.length}`)
-            console.log(`pick   ${ 100 * pickBrawler.length / sum3vs3}`)
-            console.log(`win   ------------------------  ${100 * winBrawler.length / pickBrawler.length}`)
+            console.log(`${pickBrawler}`)
+            console.log(`pick   ${ 100 * pickBrawler / sum3vs3}`)
+            console.log(`win   ------------------------  ${100 * winBrawler / pickBrawler}`)
 
-            arrResult.push([listBrawlers[i][0] , pickBrawler.length ? 100 * pickBrawler.length / sum3vs3 : 0, pickBrawler.length ? 100 * winBrawler.length / pickBrawler.length : 0])
+            arrResult.push([listBrawlers[i][0] , pickBrawler ? 100 * pickBrawler / sum3vs3 : 0, pickBrawler ? 100 * winBrawler / pickBrawler : 0])
         }
         arrResult.sort(function(a, b){return b[2]-a[2]});
         console.log(`:::::::::::::::: GLOBAL 3VS3` )
@@ -919,10 +965,7 @@ exports.brawlerRanking_200BestPlayers = async () => {
                 }, { value:0, count:0, name: "" })
                 arrAverageBrawler.push([ sumTrophies.name,  sumTrophies.value/sumTrophies.count, 0])    
             }
-            console.log("blo")
-
             arrAverageBrawler.sort(function(a, b){return b[1]-a[1]});
-            console.log("bla")
             console.log(arrAverageBrawler)
 
             let d = new Date();
