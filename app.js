@@ -8,43 +8,34 @@ const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');
-const battlesRouter = require('./routes/battles');
+// const battlesRouter = require('./routes/battles');
 const userNoLoginRouter = require('./routes/usernologin');
-const userNoLoginOfflineRouter = require('./routes/usernologinoffline');
-const userLoginRouter = require('./routes/userlogin');
+// const userNoLoginOfflineRouter = require('./routes/usernologinoffline');
+// const userLoginRouter = require('./routes/userlogin');
 
 
 ///////////////////////////   cronjob stat 
 const {task001, task002, task003, task004, task004b, task005, task005b, task006, task007, task008, task009, task010, task011, task012, task013, task014, task015} = require('./stat/stat');
 // let taskArray = [];
 task001.start();
-task002.start();
-task003.start();
-task004.start();
+// task002.start();
+// task003.start();
+// task004.start();
 task004b.start();
 
-task005.start();
-task005b.start();
+// task005.start();
+// task005b.start();
 
-task006.start();
-task007.start();
-task008.start();
-task009.start();
-task010.start();
-task011.start();
-task012.start();
-task013.start();
-task014.start();
-task015.start();
-
-
-
-
-
-
-
-
-
+// task006.start();
+// task007.start();
+// task008.start();
+// task009.start();
+// task010.start();
+// task011.start();
+// task012.start();
+// task013.start();
+// task014.start();
+// task015.start();
 
 
 var app = express();
@@ -57,7 +48,7 @@ app.use(logger('dev'));
 
 
 ////////////////// connect to database 
-mongoose.connect('mongodb://localhost:27017/bs_project', {
+mongoose.connect('mongodb://localhost:27017/brawldata_project', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology:true
@@ -69,10 +60,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/battles', battlesRouter);
+// app.use('/battles', battlesRouter);
 app.use('/usernologin', userNoLoginRouter);
-app.use('/usernologinoffline', userNoLoginOfflineRouter);
-app.use('/userlogin', userLoginRouter);
+// app.use('/usernologinoffline', userNoLoginOfflineRouter);
+// app.use('/userlogin', userLoginRouter);
 
 
 // catch 404 and forward to error handler

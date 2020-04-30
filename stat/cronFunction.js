@@ -324,29 +324,29 @@ let  getCronTimeUser = async () => {
     }
 }
 
-exports.startCronUsers = async () => {
-    for (let i = 0; i < taskArray.length; i++) {
-        taskArray[i].stop();           
-    }
-    try {
-        let param = await getCronTimeUser();
-        taskArray = [];
-        param.forEach(element => {
-            let callFunction = () => {
-                return addUserDataCron(element.tag)
-            }
-            for (let i = 0; i < element.cronJobs.length; i++) {
-                taskArray.push( new CronJob(`0 0 ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
-            }
-        });
-        for (let i = 0; i < taskArray.length; i++) {
-            taskArray[i].start();      
-        }
-        console.log(taskArray)
-    } catch (e) {
-        console.log(e)
-    } 
-};
+// exports.startCronUsers = async () => {
+//     for (let i = 0; i < taskArray.length; i++) {
+//         taskArray[i].stop();           
+//     }
+//     try {
+//         let param = await getCronTimeUser();
+//         taskArray = [];
+//         param.forEach(element => {
+//             let callFunction = () => {
+//                 return addUserDataCron(element.tag)
+//             }
+//             for (let i = 0; i < element.cronJobs.length; i++) {
+//                 taskArray.push( new CronJob(`0 0 ${element.cronJobs[i]} * * *`, callFunction, null, true, 'Europe/Berlin'));
+//             }
+//         });
+//         for (let i = 0; i < taskArray.length; i++) {
+//             taskArray[i].start();      
+//         }
+//         console.log(taskArray)
+//     } catch (e) {
+//         console.log(e)
+//     } 
+// };
 
 ///////// popularity 200 best 
 

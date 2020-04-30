@@ -75,15 +75,15 @@ let mesh3 = loader.load( '../assets/font.json', function ( font ) {
 } );
 
 
-let _3Dloader = new THREE.GLTFLoader();
-let meshShelly = false ;
-_3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
-    gltf.scene.children[0].position.y = -90;
-    gltf.scene.children[0].position.z = 250;
-    meshShelly = gltf.scene;
-    gltf.scene.children[0].scale.set(0.04,0.04,0.04);
-    scene.add(gltf.scene);
-})
+// let _3Dloader = new THREE.GLTFLoader();
+// let meshShelly = false ;
+// _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltf) {
+//     gltf.scene.children[0].position.y = -90;
+//     gltf.scene.children[0].position.z = 250;
+//     meshShelly = gltf.scene;
+//     gltf.scene.children[0].scale.set(0.04,0.04,0.04);
+//     scene.add(gltf.scene);
+// })
 
 ////// with that we set the first path of the camera 
 let catMullArray1 = [
@@ -193,18 +193,18 @@ function animate() {
     renderercss.render( sceneCSS, camera)
     renderer.render( scene, camera );
     //// once the 3d model is loaded make it rotate
-    if (meshShelly) {
-        meshShelly.children[0].rotation.z += 0.02;
-    }   
-    meshModelTest.forEach((el, index) => {
-        /// handle the special case of character shelly: rotation's behaviour is different.
-        if (el.name === "RootNode_(gltf_orientation_matrix)") {
-            el.rotation.z += 0.02 * (index%2 - 0.5); 
-        }
-        else {
-            el.rotation.y+= 0.02 * (index%2 - 0.5);
-        }
-    })
+    // if (meshShelly) {
+    //     meshShelly.children[0].rotation.z += 0.02;
+    // }   
+    // meshModelTest.forEach((el, index) => {
+    //     /// handle the special case of character shelly: rotation's behaviour is different.
+    //     if (el.name === "RootNode_(gltf_orientation_matrix)") {
+    //         el.rotation.z += 0.02 * (index%2 - 0.5); 
+    //     }
+    //     else {
+    //         el.rotation.y+= 0.02 * (index%2 - 0.5);
+    //     }
+    // })
     ///// this part is to create inertia with the scrolling
     ///// y_scroll_position is updated through scroll callback function 
     camPosIndex = 0.92 * camPosIndex + 0.08 * y_scroll_position;

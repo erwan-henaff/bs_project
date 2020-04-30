@@ -214,7 +214,7 @@ exports.addUserNoLogin = async (req,res,next) => {
                 }
             }
 
-            //////// finally save the new data with right format in the database 
+            ////// finally save the new data with right format in the database 
             await User.replaceOne({ tag : infoUser.tag}, infoUser);
 
             console.log(`new trophies level of ${infoUser.name} with tag ${infoUser.tag} has been saved`);

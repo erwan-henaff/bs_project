@@ -22,18 +22,17 @@ const makePlayerContainer = (data, meshModelTest) => {
     loader.load( '../assets/font.json', function ( font ) {
 
         let geometry = new THREE.TextGeometry( `
-tag : ${data.tag}
-trophies : ${data.trophies[data.trophies.length -1].trophies}
-highest trophies : ${data.highestTrophies[data.highestTrophies.length -1].highestTrophies}
-Experience Level : ${data.expLevel}
-3vs3 Victories : ${data["3vs3Victories"][data["3vs3Victories"].length -1]["3vs3Victories"]}
-solo Victories : ${data.soloVictories[data.soloVictories.length -1].soloVictories}
-duo Victories : ${data.duoVictories[data.duoVictories.length -1].duoVictories}
-Power Play Points : ${data.powerPlayPoints? data.powerPlayPoints : 0}
-Highest Power Play Points : ${data.highestPowerPlayPoints? data.highestPowerPlayPoints : 0}
-Best time at Robo Rumble : ${(data.bestRoboRumbleTime - data.bestRoboRumbleTime%60)/60}m${data.bestRoboRumbleTime%60}s
-Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawler%60)/60}m${data.bestTimeAsBigBrawler%60}s
-
+        tag : ${data.tag}
+        trophies : ${data.trophies[data.trophies.length -1].trophies}
+        highest trophies : ${data.highestTrophies[data.highestTrophies.length -1].highestTrophies}
+        Experience Level : ${data.expLevel}
+        3vs3 Victories : ${data["3vs3Victories"][data["3vs3Victories"].length -1]["3vs3Victories"]}
+        solo Victories : ${data.soloVictories[data.soloVictories.length -1].soloVictories}
+        duo Victories : ${data.duoVictories[data.duoVictories.length -1].duoVictories}
+        Power Play Points : ${data.powerPlayPoints? data.powerPlayPoints : 0}
+        Highest Power Play Points : ${data.highestPowerPlayPoints? data.highestPowerPlayPoints : 0}
+        Best time at Robo Rumble : ${(data.bestRoboRumbleTime - data.bestRoboRumbleTime%60)/60}m${data.bestRoboRumbleTime%60}s
+        Best time as Big Brawler : ${(data.bestTimeAsBigBrawler-data.bestTimeAsBigBrawler%60)/60}m${data.bestTimeAsBigBrawler%60}s
 
         `, {
             font: font,
@@ -108,46 +107,46 @@ Highest Trophies : ${data.highestTrophies}
         scene.add(mesh2);
     });
 
-    if (data.name === "NITA" || data.name === "BULL" || data.name === "BARLEY" || data.name === "RICO" || data.name === "BROCK" || data.name === "SPIKE" || data.name === "CARL" || data.name === "DYNAMIKE" || data.name === "MORTIS" || data.name === "GENE" || data.name === "LEON" || data.name === "TARA" || data.name === "POCO") {
-        let OBJloader = new THREE.OBJLoader();
+    // if (data.name === "NITA" || data.name === "BULL" || data.name === "BARLEY" || data.name === "RICO" || data.name === "BROCK" || data.name === "SPIKE" || data.name === "CARL" || data.name === "DYNAMIKE" || data.name === "MORTIS" || data.name === "GENE" || data.name === "LEON" || data.name === "TARA" || data.name === "POCO") {
+    //     let OBJloader = new THREE.OBJLoader();
 
-        OBJloader.load(`../assets/3Dmodels/allModels/m${data.id}.obj`, function (objM) {
+    //     OBJloader.load(`../assets/3Dmodels/allModels/m${data.id}.obj`, function (objM) {
             
-            let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/${data.name}.png`)});
-            materialCharacter.map.wrapS = 1003;
-            materialCharacter.map.wrapT = 1003;
+    //         let materialCharacter = new THREE.MeshBasicMaterial( {map : new THREE.TextureLoader().load(`../assets/3Dmodels/allModels/allModels/${data.name}.png`)});
+    //         materialCharacter.map.wrapS = 1003;
+    //         materialCharacter.map.wrapT = 1003;
 
-            let meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
+    //         let meshCharacter = new THREE.Mesh(objM.children[0].geometry, materialCharacter);
 
-            // meshModelTest = meshTest;
-            meshCharacter.scale.set(0.005,0.005,0.005);
-            meshCharacter.position.y =  13 - 1.5 * (distance);
-            meshCharacter.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
-            meshCharacter.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
-            meshCharacter.rotation.y = distance * Math.PI / 6;
+    //         // meshModelTest = meshTest;
+    //         meshCharacter.scale.set(0.005,0.005,0.005);
+    //         meshCharacter.position.y =  13 - 1.5 * (distance);
+    //         meshCharacter.position.z =  -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+    //         meshCharacter.position.x =  -300 + 20 * Math.sin( 2 * Math.PI * distance / 12);
+    //         meshCharacter.rotation.y = distance * Math.PI / 6;
             
-            meshModelTest.push(meshCharacter);
+    //         meshModelTest.push(meshCharacter);
 
-            scene.add(meshCharacter);
-        });
-    }
-    else if (data.name === "SHELLY") {
-        let _3Dloader = new THREE.GLTFLoader();
-        // let meshShelly = false ;
-        _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltfShelly) {
-            gltfShelly.scene.children[0].scale.set(0.005,0.005,0.005);
-            gltfShelly.scene.children[0].position.y = 13 - 1.5 * (distance);
-            gltfShelly.scene.children[0].position.z = -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
-            gltfShelly.scene.children[0].position.x =  -300+ 20 * Math.sin( 2 * Math.PI * distance / 12);
-            gltfShelly.scene.children[0].rotation.y = distance * Math.PI / 6;
-            meshModelTest.push(gltfShelly.scene.children[0]);
+    //         scene.add(meshCharacter);
+    //     });
+    // }
+    // else if (data.name === "SHELLY") {
+    //     let _3Dloader = new THREE.GLTFLoader();
+    //     // let meshShelly = false ;
+    //     _3Dloader.load('../assets/3Dmodels/scene.gltf', function (gltfShelly) {
+    //         gltfShelly.scene.children[0].scale.set(0.005,0.005,0.005);
+    //         gltfShelly.scene.children[0].position.y = 13 - 1.5 * (distance);
+    //         gltfShelly.scene.children[0].position.z = -300 + 20 * Math.cos( 2 * Math.PI * distance / 12);
+    //         gltfShelly.scene.children[0].position.x =  -300+ 20 * Math.sin( 2 * Math.PI * distance / 12);
+    //         gltfShelly.scene.children[0].rotation.y = distance * Math.PI / 6;
+    //         meshModelTest.push(gltfShelly.scene.children[0]);
 
-            // meshShelly = gltf.scene;
-            scene.add(gltfShelly.scene);
-        })
-    }
+    //         // meshShelly = gltf.scene;
+    //         scene.add(gltfShelly.scene);
+    //     })
+    // }
 
-    else {
+    // else {
         let geometryCube = new THREE.BoxGeometry( 5, 7, 2 );
         let edges = new THREE.EdgesGeometry( geometryCube );
         let lineCube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x00039c } ) );
@@ -177,7 +176,7 @@ Highest Trophies : ${data.highestTrophies}
 
         // scene.add( lineCube );
         scene.add( cube );
-    }
+    // }
 };
 
 const makeBattleSection = (data) => {
