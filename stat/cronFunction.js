@@ -371,7 +371,7 @@ exports.victoryShowdown = async () => {
 
 exports.cleaning2MonthHighRank = async () => {
     
-    let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^202004/ } })
+    let oldestBattleDeletion = await BattleHighRank.deleteMany({ "battleTime" : {$regex : /^2020042/ } })
     console.log(oldestBattleDeletion.deletedCount);
     // for (let i = 0; i < 9; i++) {
     //     let regex = new RegExp(`^2020030${i}`);
@@ -521,21 +521,29 @@ exports.brawlersRanking = async () => {
 
 exports.modePopularityHighRank = async () => {
     try {
-        let allBattles200Brawlball = await BattleHighRank.find({"event.mode" : "brawlBall"})
-        let allBattles200BrawlballWin = await BattleHighRank.find({
+
+        let total = await BattleHighRank.countDocuments({"battle.type" : "ranked"});
+
+
+        let allBattles200Brawlball = await BattleHighRank.countDocuments({"event.mode" : "brawlBall"})
+        let allBattles200BrawlballWin = await BattleHighRank.countDocuments({
             "event.mode" : "brawlBall",
             "battle.type" : "ranked",
             "battle.result" : "victory"})
 
-        let allBattles200Gemgrab = await BattleHighRank.find({"event.mode" : "gemGrab"})
-        let allBattles200GemgrabWin = await BattleHighRank.find({
+        let allBattles200Gemgrab = await BattleHighRank.countDocuments({"event.mode" : "gemGrab"})
+        let allBattles200GemgrabWin = await BattleHighRank.countDocuments({
             "event.mode" : "gemGrab", 
             "battle.type" : "ranked",
             "battle.result" : "victory"})
 
 
-        console.log (`brawlball ${allBattles200Brawlball.length } --- ${100 * allBattles200BrawlballWin.length / allBattles200Brawlball.length}`)
-        console.log (`gemgrab ${allBattles200Gemgrab.length } --- ${100 * allBattles200GemgrabWin.length / allBattles200Gemgrab.length}`)
+        // console.log (`brawlball ${allBattles200Brawlball.length } --- ${100 * allBattles200BrawlballWin.length / allBattles200Brawlball.length}`)
+        // console.log (`gemgrab ${allBattles200Gemgrab.length } --- ${100 * allBattles200GemgrabWin.length / allBattles200Gemgrab.length}`)
+
+        console.log (`brawlball ${100 * allBattles200Brawlball /total } --- ${100 * allBattles200BrawlballWin / allBattles200Brawlball}`)
+        console.log (`gemgrab ${100 * allBattles200Gemgrab / total} --- ${100 * allBattles200GemgrabWin / allBattles200Gemgrab}`)
+
 
     }
     catch (e) {
@@ -545,21 +553,28 @@ exports.modePopularityHighRank = async () => {
 
 exports.modePopularityHighRank2 = async () => {
     try {
-        
-        let allBattles200Heist = await BattleHighRank.find({"event.mode" : "heist"})
-        let allBattles200HeistWin = await BattleHighRank.find({"event.mode" : "heist", "battle.result" : "victory"})
 
-        let allBattles200Bounty = await BattleHighRank.find({"event.mode" : "bounty"}) 
-        let allBattles200BountyWin = await BattleHighRank.find({"event.mode" : "bounty", "battle.result" : "victory"})
+        let total = await BattleHighRank.countDocuments({"battle.type" : "ranked"});
+        
+        let allBattles200Heist = await BattleHighRank.countDocuments({"event.mode" : "heist"})
+        let allBattles200HeistWin = await BattleHighRank.countDocuments({"event.mode" : "heist", "battle.result" : "victory"})
+
+        let allBattles200Bounty = await BattleHighRank.countDocuments({"event.mode" : "bounty"}) 
+        let allBattles200BountyWin = await BattleHighRank.countDocuments({"event.mode" : "bounty", "battle.result" : "victory"})
  
-        let allBattles200Siege = await BattleHighRank.find({"event.mode" : "siege"})
-        let allBattles200SiegeWin = await BattleHighRank.find({"event.mode" : "siege", "battle.result" : "victory"})
+        let allBattles200Siege = await BattleHighRank.countDocuments({"event.mode" : "siege"})
+        let allBattles200SiegeWin = await BattleHighRank.countDocuments({"event.mode" : "siege", "battle.result" : "victory"})
 
-        console.log (`heist ${allBattles200Heist.length } --- ${100 * allBattles200HeistWin.length / allBattles200Heist.length}`)
+        let allBattles200Hotzone = await BattleHighRank.countDocuments({"event.mode" : "hotZone"})
+        let allBattles200HotzoneWin = await BattleHighRank.countDocuments({"event.mode" : "hotZone", "battle.result" : "victory"})
+
+        console.log (`heist ${100 * allBattles200Heist / total} --- ${100 * allBattles200HeistWin / allBattles200Heist}`)
         
-        console.log (`bounty ${allBattles200Bounty.length } --- ${100 * allBattles200BountyWin.length / allBattles200Bounty.length}`);
+        console.log (`bounty ${100 * allBattles200Bounty / total} --- ${100 * allBattles200BountyWin / allBattles200Bounty}`);
         
-        console.log (`siege ${allBattles200Siege.length } --- ${100 * allBattles200SiegeWin.length / allBattles200Siege.length}`);
+        console.log (`siege ${100 * allBattles200Siege / total } --- ${100 * allBattles200SiegeWin / allBattles200Siege}`);
+
+        console.log (`Hotzone ${100 * allBattles200Hotzone / total} --- ${100 * allBattles200HotzoneWin / allBattles200Hotzone}`);
     }
     catch (e) {
         console.log("error in modepopularityHighRank cornFunction", e);
@@ -568,10 +583,13 @@ exports.modePopularityHighRank2 = async () => {
 
 exports.modePopularityHighRank3 = async () => {
     try {
-        let allBattles200DSD = await BattleHighRank.find({"event.mode" : "duoShowdown"})
-        let allBattles200SSD = await BattleHighRank.find({"event.mode" : "soloShowdown"})
-        console.log (`solo Showdown ${allBattles200SSD.length }`)
-        console.log (`duo Showdown ${allBattles200DSD.length}`)
+
+        let total = await BattleHighRank.countDocuments({"battle.type" : "ranked"});
+
+        let allBattles200DSD = await BattleHighRank.countDocuments({"event.mode" : "duoShowdown"})
+        let allBattles200SSD = await BattleHighRank.countDocuments({"event.mode" : "soloShowdown"})
+        console.log (`solo Showdown ${100 * allBattles200SSD / total}`)
+        console.log (`duo Showdown ${100 * allBattles200DSD / total}`)
     }
     catch (e) {
         console.log("error in modepopularityHighRank cornFunction", e);
@@ -694,17 +712,16 @@ exports.brawlersPickWinRate200glob = async() => {
             return [element.name, element.id]
         });
 
-        let no_3vs3Battle = await BattleHighRank.find({
-            "event.mode" : "soloShowdown",
-            "event.mode" : "duoShowdown", 
+        let no_3vs3Battle = await BattleHighRank.countDocuments({
+            "event.mode" : {$in : ["soloShowdown", "duoShowdown"]}, 
             "battle.type" : "ranked"})
         let total = await BattleHighRank.countDocuments({"battle.type" : "ranked"});
-        console.log("showdown", no_3vs3Battle.length)
-        console.log("total", total)
-        console.log(no_3vs3Battle.length * 100 / total)
-
-        let sum3vs3 = total - no_3vs3Battle.length;
-        no_3vs3Battle = [];
+        console.log("showdown", no_3vs3Battle);
+        console.log("total", total);
+        let sum3vs3 = total - no_3vs3Battle;
+        console.log("sum3vs3", sum3vs3);
+        console.log(no_3vs3Battle * 100 / total);
+        
 
         let arrResult = [];
         for (let i = 0; i < listBrawlers.length; i++) {
@@ -742,7 +759,7 @@ exports.brawlersPickWinRate200glob = async() => {
 
             pickBrawler1 = await BattleHighRank.find({
                 
-                "event.mode" : {$in : ["siege", "heist", "gemGrab", "bounty"]},
+                "event.mode" : {$in : ["siege", "heist", "gemGrab", "bounty", "hotZone"]},
                 "battle.type" : "ranked" ,
                 "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : listBrawlers[i][0]}}}
                 // "battle.teams" : { "$elemMatch": {"$elemMatch" : { "brawler.name" : "COLT"}}}
@@ -891,6 +908,10 @@ exports.brawlersPickWinRate200bounty = async() => {
 
 exports.brawlersPickWinRate200brawlBall = async() => {
     pickWin200Param("brawlBall")
+}
+
+exports.brawlersPickWinRate200hotZone = async() => {
+    pickWin200Param("hotZone")
 }
 
 exports.brawlerRanking_200BestPlayers = async () => {
